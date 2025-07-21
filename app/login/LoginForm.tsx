@@ -1,14 +1,21 @@
-// ✅ app/Login.tsx
+
+
+
+
+import { useLocalSearchParams } from 'expo-router';
 
 import React from 'react';
 import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-export default function Login() {
+export default function LoginForm() {
+  const { role } = useLocalSearchParams<{ role?: string }>();
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <View style={styles.logoContainer}>
         <Image source={require('@/assets/images/gramurja-logo.png')} style={styles.logo} />
         <Text style={styles.title}>GramUrja</Text>
+        <Text style={styles.roleText}>Logging in as: {role === 'technician' ? 'Technician' : 'Customer'}</Text>
       </View>
 
       <View style={styles.formContainer}>
@@ -48,6 +55,11 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#1E293B',
+  },
+  roleText: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginTop: 4,
   },
   formContainer: {
     width: '100%',
