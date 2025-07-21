@@ -51,7 +51,9 @@ export default function SignupForm() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+           
       <View style={styles.formContainer}>
+        
         <Text style={styles.title}>Sign Up</Text>
         <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
         <TextInput placeholder="Password" value={password} onChangeText={setPassword} style={styles.input} secureTextEntry />
@@ -76,19 +78,25 @@ const styles = StyleSheet.create({
   formContainer: { width: '100%' },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   input: {
-    borderWidth: 1,
+    borderWidth: 3,
     borderColor: '#ccc',
     borderRadius: 8,
-    padding: 12,
+    padding: 15,
     marginBottom: 16,
+    width:'40%',
+    marginLeft: '30%'
   },
   button: {
     backgroundColor: '#16A34A',
-    padding: 12,
+    padding: 19,
+    width:'40%',
+    marginLeft: '30%',
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 16,
   },
+  
+  
   buttonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
   signupText: { textAlign: 'center', fontSize: 14 },
   linkText: { color: '#10B981', fontWeight: '500' },

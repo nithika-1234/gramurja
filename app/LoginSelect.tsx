@@ -14,7 +14,7 @@ export default function LoginSelect() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/images/icon.png')} // ✅ No @ here
+        source={require('../assets/images/icon.png')} 
         style={styles.logo}
       />
       <Text style={styles.title}>Login as</Text>
@@ -59,20 +59,20 @@ const styles = StyleSheet.create({
   buttonTech: {
     flexDirection: 'row',
     backgroundColor: '#FF8C00',
-    padding: 15,
+    padding: 20,
     borderRadius: 10,
     alignItems: 'center',
-    width: '80%',
-    marginBottom: 20,
+    width: '40%',
+    marginBottom: 40,
     justifyContent: 'center',
   },
   buttonCust: {
     flexDirection: 'row',
     backgroundColor: '#1976D2',
-    padding: 15,
+    padding: 20,
     borderRadius: 10,
     alignItems: 'center',
-    width: '80%',
+    width: '40%',
     justifyContent: 'center',
   },
   buttonText: {
