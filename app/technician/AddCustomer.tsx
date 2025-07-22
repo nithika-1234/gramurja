@@ -118,11 +118,11 @@ const styles = StyleSheet.create({
   heading: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   input: {
     backgroundColor: '#F0F0F0', padding: 12, borderRadius: 8,
-    marginBottom: 16, fontSize: 15, borderColor: '#ccc', borderWidth: 1,width:'40%', marginLeft: '30%'
+    marginBottom: 16, fontSize: 15, borderColor: '#ccc', borderWidth: 1,width:'100%',
   },
   submitButton: {
     backgroundColor: '#283593', padding: 15, borderRadius: 10,
-    alignItems: 'center', marginTop: 10,width:'40%', marginLeft: '30%'
+    alignItems: 'center', marginTop: 10,width:'100%'
   },
   submitText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   back: { marginTop: 20, textAlign: 'center', color: '#555' },

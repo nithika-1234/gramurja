@@ -83,14 +83,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     marginBottom: 16,
-    width:'40%',
-    marginLeft: '30%'
+    width:'100%',
   },
   button: {
     backgroundColor: '#16A34A',
     padding: 19,
-    width:'40%',
-    marginLeft: '30%',
+    width:'100%',
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 16,

@@ -1,87 +1,107 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase/config';
-import { useRouter } from 'expo-router';
 
 export default function InventoryHistory() {
   const [history, setHistory] = useState<any[]>([]);
-  const router = useRouter();
+
+  const fetchHistory = async () => {
+    try {
+      const q = query(collection(db, 'inventory-history'), orderBy('timestamp', 'desc'));
+      const snapshot = await getDocs(q);
+      const list: any[] = [];
+
+      snapshot.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() });
+      });
+
+      setHistory(list);
+    } catch (error) {
+      console.error('Error fetching history:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const q = query(collection(db, 'inventory-history'), orderBy('timestamp', 'desc'));
-        const snapshot = await getDocs(q);
-        const logs: any[] = [];
-
-        snapshot.forEach((doc) => {
-          logs.push(doc.data());
-        });
-
-        setHistory(logs);
-      } catch (err) {
-        console.error('Fetch history error:', err);
-      }
-    };
-
     fetchHistory();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>📜 Inventory Action History</Text>
-      <ScrollView>
-        {history.map((entry, index) => {
-          const isAdd = entry.action === 'add';
-          return (
-            <View
-              key={index}
-              style={[
-                styles.logCard,
-                { backgroundColor: isAdd ? '#E8F5E9' : '#FFEBEE' },
-              ]}
-            >
-              <Text style={styles.time}>
-                {entry.timestamp?.toDate().toLocaleString() || 'Unknown time'}
-              </Text>
-              <Text style={styles.details}>
-                <Text style={{ fontWeight: 'bold' }}>{entry.user}</Text>{' '}
-                {isAdd ? '➕ added' : '➖ removed'}{' '}
-                <Text style={{ fontWeight: 'bold' }}>{entry.item}</Text>
-              </Text>
-            </View>
-          );
-        })}
-      </ScrollView>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>📦 Inventory History</Text>
 
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.back}>⬅ Back</Text>
-      </TouchableOpacity>
-    </View>
+      {history.map((entry, index) => (
+        <View key={index} style={styles.card}>
+          <Text style={styles.user}>{entry.user}</Text>
+          <Text style={entry.action === 'add' ? styles.actionAdd : styles.actionRemove}>
+            {entry.action === 'add' ? '➕' : '➖'}
+          </Text>
+          <Text style={styles.item}>{entry.item}</Text>
+        </View>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-  heading: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 15,
+  container: {
+    flex: 1,
+    backgroundColor: '#FAFAFA',
+    padding: 20,
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 24,
     color: '#333',
   },
-  logCard: {
-    borderRadius: 10,
-    padding: 15,
+
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 14,
     marginBottom: 12,
+    alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
   },
-  time: { fontSize: 13, color: '#555', marginBottom: 6 },
-  details: { fontSize: 15, color: '#333' },
-  back: { marginTop: 20, textAlign: 'center', color: '#007BFF', fontSize: 16 },
+
+  user: {
+    flex: 4,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#374151',
+  },
+
+  actionAdd: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#16a34a', // green
+    textAlign: 'center',
+  },
+
+  actionRemove: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#dc2626', // red
+    textAlign: 'center',
+  },
+
+  item: {
+    flex: 3,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'right',
+    color: '#1f2937',
+  },
 });

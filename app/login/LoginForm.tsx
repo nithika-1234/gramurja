@@ -227,19 +227,15 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: '#E5E7EB',
     fontSize: 16,
-    width:'40%',
     marginBottom: 16,
-    marginLeft: '30%',
   },
   button: {
     backgroundColor: '#16A34A',
     paddingVertical: 19,
     borderRadius: 10,
-    width: '40%',
     alignItems: 'center',
     marginBottom: 12,
     
-    marginLeft: '30%',
   },
   buttonText: {
     color: '#FFF',
