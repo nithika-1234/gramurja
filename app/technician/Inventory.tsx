@@ -180,37 +180,79 @@ export default function Inventory() {
     fetchInventory();
   }, []);
 
+  // const handleAdd = async (itemName: string) => {
+  //   const itemRef = doc(db, 'inventory', itemName);
+  //   const current = items.find((i) => i.name === itemName)?.count || 0;
+
+  //   try {
+  //     await setDoc(itemRef, { count: current + 1 }, { merge: true });
+  //     fetchInventory(); // Refresh after update
+  //   } catch (err) {
+  //     console.error('Add error:', err);
+  //   }
+  // };
+  
   const handleAdd = async (itemName: string) => {
-    const itemRef = doc(db, 'inventory', itemName);
-    const current = items.find((i) => i.name === itemName)?.count || 0;
+  const itemRef = doc(db, 'inventory', itemName);
+  const current = items.find((i) => i.name === itemName)?.count || 0;
 
-    try {
-      await setDoc(itemRef, { count: current + 1 }, { merge: true });
-      fetchInventory(); // Refresh after update
-    } catch (err) {
-      console.error('Add error:', err);
-    }
-  };
+  try {
+    await setDoc(itemRef, { count: current + 1 }, { merge: true });
 
-  const handleRemove = async (itemName: string) => {
-    const itemRef = doc(db, 'inventory', itemName);
-    const current = items.find((i) => i.name === itemName)?.count || 0;
+    const historyRef = collection(db, 'inventory-history');
+    await addDoc(historyRef, {
+      item: itemName,
+      action: 'add',
+      timestamp: serverTimestamp(),
+      user: auth.currentUser?.email || 'unknown',
+    });
 
-    if (current <= 0) return; // Prevent negative
+    fetchInventory();
+  } catch (err) {
+    console.error('Add error:', err);
+  }
+};
 
-    try {
-      await updateDoc(itemRef, { count: current - 1 });
-      fetchInventory(); // Refresh after update
-    } catch (err) {
-      console.error('Remove error:', err);
-    }
-  };
+
+  // const handleRemove = async (itemName: string) => {
+  //   const itemRef = doc(db, 'inventory', itemName);
+  //   const current = items.find((i) => i.name === itemName)?.count || 0;
+
+  //   if (current <= 0) return; // Prevent negative
+
+  //   try {
+  //     await updateDoc(itemRef, { count: current - 1 });
+  //     fetchInventory(); // Refresh after update
+  //   } catch (err) {
+  //     console.error('Remove error:', err);
+  //   }
+  // };
+const handleRemove = async (itemName: string) => {
+  const itemRef = doc(db, 'inventory', itemName);
+  const current = items.find((i) => i.name === itemName)?.count || 0;
+
+  try {
+    await setDoc(itemRef, { count: current + 1 }, { merge: true });
+
+    const historyRef = collection(db, 'inventory-history');
+    await addDoc(historyRef, {
+      item: itemName,
+      action: 'remove',
+      timestamp: serverTimestamp(),
+      user: auth.currentUser?.email || 'unknown',
+    });
+
+    fetchInventory();
+  } catch (err) {
+    console.error('Add error:', err);
+  }
+};
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Inventory Management</Text>
 
-      {items.map((item, index) => (
+      {/* {items.map((item, index) => (
         <View key={index} style={styles.itemRow}>
           <Text style={styles.itemText}>
             {item.name} ({item.count} available)
@@ -222,11 +264,45 @@ export default function Inventory() {
             <Text style={styles.btnText}>Remove</Text>
           </TouchableOpacity>
         </View>
-      ))}
+      ))} */}
+      {items.map((item, index) => (
+  // <View key={index} style={styles.itemRow}>
+  //   <View style={styles.itemInfo}>
+  //     <Text style={styles.itemName}>{item.name}</Text>
+  //     <Text style={[styles.stockText, item.count <= 5 && { color: 'red' }]}>
+  //       {item.count} available
+  //     </Text>
+  //   </View>
+  //   <TouchableOpacity style={styles.addBtn} onPress={() => handleAdd(item.name)}>
+  //     <Text style={styles.btnText}>Add</Text>
+  //   </TouchableOpacity>
+  //   <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(item.name)}>
+  //     <Text style={styles.btnText}>Remove</Text>
+  //   </TouchableOpacity>
+  // </View>
+  <View style={styles.itemRow}>
+  <Text style={styles.itemName}>{item.name}</Text>
+  {/* <Text style={[styles.stock, item.count < 3 && styles.lowStock]}>
+    {item.count} available
+  </Text> */}
+  <TouchableOpacity style={styles.addBtn} onPress={() => handleAdd(item.name)}>
+    <Text style={styles.btnText}>Add</Text>
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(item.name)}>
+    <Text style={styles.btnText}>Remove</Text>
+  </TouchableOpacity>
+</View>
 
-      <TouchableOpacity style={styles.historyBtn}>
+))}
+
+
+      {/* <TouchableOpacity style={styles.historyBtn}>
         <Text style={styles.historyText}>View History</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <TouchableOpacity style={styles.historyBtn} onPress={() => router.push('/technician/InventoryHistory')}>
+  <Text style={styles.historyText}>View History</Text>
+</TouchableOpacity>
+
 
       <TouchableOpacity onPress={() => router.back()}>
         <Text style={styles.back}>⬅ Back</Text>
@@ -248,6 +324,19 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
   },
+  itemInfo: {
+  flex: 1,
+},
+itemName: {
+  fontSize: 16,
+  fontWeight: '500',
+},
+stockText: {
+  fontSize: 14,
+  color: '#555',
+  marginTop: 4,
+},
+
   itemText: { fontSize: 16 },
   addBtn: { backgroundColor: '#8E24AA', padding: 10, borderRadius: 6 },
   removeBtn: { backgroundColor: '#F44336', padding: 10, borderRadius: 6 },
