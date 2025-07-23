@@ -143,17 +143,14 @@
 //   back: { marginTop: 20, textAlign: 'center', color: '#555' },
 // });
 
-import { addDoc, serverTimestamp } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
-  collection,
+  addDoc, collection,
   doc,
-  getDocs,
-  updateDoc,
-  setDoc,
+  getDocs, serverTimestamp, setDoc
 } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { auth, db } from '../../firebase/config';
 
 export default function Inventory() {

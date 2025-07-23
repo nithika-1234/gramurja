@@ -46,9 +46,10 @@ export default function TechnicianDashboard() {
         <Text style={styles.buttonText}>Add Customer</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/InstallationForm')}>
-        <Text style={styles.buttonText}>View Installation</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/technician/ViewCustomers')}>
+             <Text style={styles.buttonText}>View Customer</Text>
       </TouchableOpacity>
+
 
       <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/Inventory')}>
         <Text style={styles.buttonText}>Inventory</Text>
