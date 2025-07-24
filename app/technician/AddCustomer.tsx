@@ -43,12 +43,13 @@ export default function AddCustomer() {
   const [address, setAddress] = useState('');
   const [systemSize, setSystemSize] = useState('');
   const [status, setStatus] = useState('');
+  const [contact,setContact] = useState('');
 const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
      if (loading) return;
   setLoading(true);
-    if (!name || !address || !systemSize || !status) {
+    if (!name || !address || !systemSize || !status||!contact) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
@@ -81,6 +82,7 @@ try {
       address,
       systemSize,
       status,
+      contact,
       technicianId: technician.uid,
       createdAt: serverTimestamp(),
     });
@@ -101,8 +103,8 @@ try {
       <TextInput placeholder="Address" style={styles.input} value={address} onChangeText={setAddress} />
       <TextInput placeholder="System Size (kW)" keyboardType="numeric" style={styles.input} value={systemSize} onChangeText={setSystemSize} />
       <TextInput placeholder="Status (e.g., Installed, Pending)" style={styles.input} value={status} onChangeText={setStatus} />
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+ <TextInput placeholder="Contact Number" style={styles.input} value={contact} onChangeText={setContact}  />
+       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitText}>SUBMIT</Text>
       </TouchableOpacity>
 
@@ -114,16 +116,56 @@ try {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-  heading: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: '#E6F4EA',
+    padding: 20,
+    justifyContent: 'center',
+  },
+  heading: {
+    fontSize: 26,
+    fontWeight: '700',
+    marginBottom: 24,
+    textAlign: 'center',
+    color: '#1B4332',
+  },
   input: {
-    backgroundColor: '#F0F0F0', padding: 12, borderRadius: 8,
-    marginBottom: 16, fontSize: 15, borderColor: '#ccc', borderWidth: 1,width:'100%',
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 16,
+    fontSize: 16,
+    borderColor: '#D1D5DB',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   submitButton: {
-    backgroundColor: '#283593', padding: 15, borderRadius: 10,
-    alignItems: 'center', marginTop: 10,width:'100%'
+    backgroundColor: '#1B4332',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 10,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
   },
-  submitText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  back: { marginTop: 20, textAlign: 'center', color: '#555' },
+  submitText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  back: {
+    marginTop: 24,
+    textAlign: 'center',
+    color: '#4B5563',
+    fontSize: 16,
+  },
 });

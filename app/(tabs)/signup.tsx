@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -20,6 +20,11 @@ export default function SignupForm() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  useEffect(() => {
+  // Clear form values on mount
+  setEmail('');
+  setPassword('');
+}, []);
 
   const handleSignup = async () => {
     console.log('Signup function called with:', email, password, role);
@@ -53,10 +58,33 @@ export default function SignupForm() {
     >
            
       <View style={styles.formContainer}>
-        
+
         <Text style={styles.title}>Sign Up</Text>
-        <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
-        <TextInput placeholder="Password" value={password} onChangeText={setPassword} style={styles.input} secureTextEntry />
+       <TextInput
+  placeholder="Email"
+  value={email}
+  onChangeText={setEmail}
+  style={styles.input}
+  autoCapitalize="none"
+  autoCorrect={false}
+  autoComplete="off"
+  textContentType="none"
+  importantForAutofill="no"
+/>
+
+<TextInput
+  placeholder="Password"
+  value={password}
+  onChangeText={setPassword}
+  style={styles.input}
+  secureTextEntry
+  autoCapitalize="none"
+  autoCorrect={false}
+  autoComplete="off"
+  textContentType="none"
+  importantForAutofill="no"
+/>
+
 
          <TouchableOpacity style={styles.button} onPress={handleSignup}> 
           <Text style={styles.buttonText}>Sign Up</Text>
@@ -74,7 +102,8 @@ export default function SignupForm() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', backgroundColor: '#F9FAFB', padding: 20 },
+  container: { flex: 1, justifyContent: 'center',     backgroundColor: '#E6F4EA'
+, padding: 20 },
   formContainer: { width: '100%' },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   input: {
@@ -82,6 +111,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 15,
+    backgroundColor: '#fff',
     marginBottom: 16,
     width:'100%',
   },

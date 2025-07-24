@@ -29,43 +29,100 @@
 //   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 30, textAlign: 'center' }
 // });
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+} from 'react-native';
+import { useState } from 'react';
 
 export default function TechnicianDashboard() {
   const router = useRouter();
 
   const navigateTo = (path: string) => {
-    router.push(path as any); // 👈 force push if TS is annoying
+    router.push(path as any);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>WELCOME, RAVI</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor="#D1FAE5" />
+      <View style={styles.container}>
+        <Text style={styles.welcomeText}> Welcome</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/AddCustomer')}>
-        <Text style={styles.buttonText}>Add Customer</Text>
-      </TouchableOpacity>
+        <View style={styles.card}>
+          <CustomButton label="➕ Add Customer" onPress={() => navigateTo('/technician/AddCustomer')} />
+          <CustomButton label="🔧 View Installation" onPress={() => navigateTo('/technician/InstallationForm')} />
+          <CustomButton label="📦 Inventory" onPress={() => navigateTo('/technician/SelectedItemsScreen')} />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
 
-      <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/InstallationForm')}>
-        <Text style={styles.buttonText}>View Installation</Text>
-      </TouchableOpacity>
+// ✅ Custom reusable button with press effect
+function CustomButton({ label, onPress }: { label: string; onPress: () => void }) {
+  const [isPressed, setIsPressed] = useState(false);
 
-      <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/Inventory')}>
-        <Text style={styles.buttonText}>Inventory</Text>
-      </TouchableOpacity>
-    </View>
+  return (
+    <Pressable
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+      onPress={onPress}
+      style={[
+        styles.button,
+        { backgroundColor: isPressed ? '#02511fff' : '#22C55E' }, // darken on press
+      ]}
+    >
+      <Text style={styles.buttonText}>{label}</Text>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
-  heading: { fontSize: 24, fontWeight: 'bold', marginBottom: 30, textAlign: 'center' },
-  button: {
-    backgroundColor: '#5C6BC0',
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: 'center',
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#D1FAE5',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+     backgroundColor: '#E6F4EA',
+  },
+  welcomeText: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 32,
+    color: '#065F46',
+    textAlign: 'center',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+ button: {
+  paddingVertical: 16,
+  borderRadius: 12,
+  marginBottom: 18,
+  alignItems: 'center',
+},
+
+  buttonText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '600',
+  },
 });
