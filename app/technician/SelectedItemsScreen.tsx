@@ -86,10 +86,9 @@ const SelectedItemsScreen = () => {
   }
     const filtered = items.filter((item) => selected.has(item.id));
 
-  // const filtered = items.filter((item) => selected.has(item.id) && item.option);
-console.log("Navigating to:", "OptionSelectedScreen");
-console.log("Navigation object:", navigation);
-navigation.navigate("OptionSelectedScreen", {selectedItems: filtered,});
+  navigation.navigate('OptionSelectedScreen', {
+    selectedItems: filtered, // ✅ selectedItems should be defined and not empty
+  });
 };
 
 const selectAll = () => {
