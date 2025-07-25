@@ -68,8 +68,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import SelectedItemsScreen from './technician/SelectedItemsScreen';
 import OptionSelectedScreen from './technician/OptionSelectedScreen';
+import SelectedItemsScreen from './technician/SelectedItemsScreen';
 
 export type InventoryItem = {
   id: string;
@@ -82,7 +82,7 @@ export type InventoryItem = {
 
 export type RootStackParamList = {
   SelectedItemsScreen: undefined;
-  OptionSelectedScreen: { selectedItems: { id: string; name: string }[] };
+  OptionSelectedScreen: {selectedItems: InventoryItem[] };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -94,14 +94,49 @@ export default function App() {
         <Stack.Screen 
           name="SelectedItemsScreen" 
           component={SelectedItemsScreen}
-          options={{ title: 'Inventory Management' }}
         />
         <Stack.Screen 
           name="OptionSelectedScreen" 
           component={OptionSelectedScreen}   
-          options={{ title: 'Selected Items Summary' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+
+
+
+
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import Inventory from './technician/Inventory'; // Adjust path if needed
+// import InventoryHistory from './technician/InventoryHistory'; // Adjust path if needed
+
+// export type RootStackParamList = {
+//   Inventory: undefined;
+//   InventoryHistory: undefined;
+// };
+
+// const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <Stack.Navigator initialRouteName="Inventory">
+//         <Stack.Screen
+//           name="Inventory"
+//           component={Inventory}
+//           options={{ title: 'Inventory' }}
+//         />
+//         <Stack.Screen
+//           name="InventoryHistory"
+//           component={InventoryHistory}
+//           options={{ title: 'Inventory History' }}
+//         />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
+

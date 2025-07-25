@@ -35,33 +35,27 @@ const SelectedItemsScreen = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchInventory = async () => {
-      try {
-        setLoading(true);
-        const snapshot = await getDocs(collection(db, "inventory_items"));
-        const initialSelected = new Set<string>();
+ useEffect(() => {
+  const fetchInventory = async () => {
+    try {
+      setLoading(true);
+      const snapshot = await getDocs(collection(db, "inventory_items"));
+      const data = snapshot.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() } as InventoryItem;
+      });
+      setItems(data);
+      setSelected(new Set()); // nothing selected initially
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      Alert.alert("Error", "Failed to load inventory items");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const data = snapshot.docs.map((doc) => {
-          const item = { id: doc.id, ...doc.data() } as InventoryItem;
-          if (item.option) {
-            initialSelected.add(item.id);
-          }
-          return item;
-        });
+  fetchInventory();
+}, []);
 
-        setItems(data);
-        setSelected(initialSelected);
-      } catch (error) {
-        console.error("Error fetching inventory:", error);
-        Alert.alert("Error", "Failed to load inventory items");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInventory();
-  }, []);
 
   const updateOptionInFirebase = async (id: string, value: boolean) => {
     try {
@@ -72,42 +66,40 @@ const SelectedItemsScreen = () => {
     }
   };
 
-  const toggleSelect = async (id: string) => {
-    setSelected((prev) => {
-      const copy = new Set(prev);
-      const newValue = !copy.has(id);
-      if (newValue) {
-        copy.add(id);
-      } else {
-        copy.delete(id);
-      }
-      updateOptionInFirebase(id, newValue);
-      return copy;
-    });
-  };
+  const toggleSelect = (id: string) => {
+  setSelected((prev) => {
+    const copy = new Set(prev);
+    if (copy.has(id)) {
+      copy.delete(id);
+    } else {
+      copy.add(id);
+    }
+    return copy;
+  });
+};
+
 
   const handleNext = async () => {
   if (selected.size === 0) {
     Alert.alert("No Items Selected", "Please select at least one item to continue.");
     return;
   }
+    const filtered = items.filter((item) => selected.has(item.id));
 
-  const filtered = items.filter((item) => selected.has(item.id) && item.option);
-
-navigation.navigate("OptionSelectedScreen", { selectedItems: filtered });
+  // const filtered = items.filter((item) => selected.has(item.id) && item.option);
+console.log("Navigating to:", "OptionSelectedScreen");
+console.log("Navigation object:", navigation);
+navigation.navigate("OptionSelectedScreen", {selectedItems: filtered,});
 };
 
-
-  const selectAll = () => {
-    const allIds = items.map((item) => item.id);
-    if (selected.size === items.length) {
-      allIds.forEach((id) => updateOptionInFirebase(id, false));
-      setSelected(new Set());
-    } else {
-      allIds.forEach((id) => updateOptionInFirebase(id, true));
-      setSelected(new Set(allIds));
-    }
-  };
+const selectAll = () => {
+  const allIds = items.map((item) => item.id);
+  if (selected.size === items.length) {
+    setSelected(new Set());
+  } else {
+    setSelected(new Set(allIds));
+  }
+};
 
   if (loading) {
     return (

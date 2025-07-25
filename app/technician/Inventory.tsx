@@ -393,7 +393,7 @@
 //   Alert,
 //   ActivityIndicator,
 // } from "react-native";
-// import { RootStackParamList } from "../App";
+//  import { RootStackParamList } from "../App";
 
 // type InventoryItem = {
 //   id: string;
@@ -514,9 +514,14 @@
 //   };
 
 //   const handleViewHistory = () => {
-//     console.log("Navigating to Inventory History");
-//     navigation.navigate("InventoryHistory");
-//   };
+//   const technicianId = auth.currentUser?.uid;
+//   if (technicianId) {
+//     navigation.navigate("InventoryHistory", { technicianId });
+//   } else {
+//     Alert.alert("Error", "Technician not logged in");
+//   }
+// };
+
 
 //   if (loading) {
 //     return (

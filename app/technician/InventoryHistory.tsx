@@ -329,323 +329,465 @@
 
 
 
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
-import { db,auth } from "../../firebase/config";
-import { RootStackParamList } from "../App";
+// import { useNavigation } from "@react-navigation/native";
+// import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+// import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+// import React, { useState, useEffect } from "react";
+// import {
+//   Text,
+//   View,
+//   FlatList,
+//   TouchableOpacity,
+//   StyleSheet,
+//   ActivityIndicator,
+//   Alert,
+// } from "react-native";
+// import { db,auth } from "../../firebase/config";
+// import { RootStackParamList } from "../App";
 
-type HistoryItem = {
+// type HistoryItem = {
+//   id: string;
+//   itemName: string;
+//   action: "added" | "removed";
+//   previousQuantity: number;
+//   newQuantity: number;
+//   date: string;
+//   timestamp: any;
+//   technicianId?: string;
+// };
+
+// type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+// const InventoryHistory = () => {
+//   const navigation = useNavigation<NavigationProp>();
+//   const [history, setHistory] = useState<HistoryItem[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     fetchHistory();
+//   }, []);
+
+//   const fetchHistory = async () => {
+//   try {
+//     setLoading(true);
+//     const technicianId = auth.currentUser?.uid;
+
+//     const q = query(
+//       collection(db, "inventory_history"),
+//       where("technicianId", "==", technicianId),
+//       orderBy("timestamp", "desc")
+//     );
+
+//     const snapshot = await getDocs(q);
+//     const data = snapshot.docs.map((doc) => ({
+//       id: doc.id,
+//       ...doc.data(),
+//     })) as HistoryItem[];
+//     setHistory(data);
+//   } catch (error) {
+//     console.error("Error fetching history:", error);
+//     Alert.alert("Error", "Failed to load history");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+//   const formatDate = (dateString: string) => {
+//     try {
+//       const date = new Date(dateString);
+//       return date.toLocaleString('en-IN', {
+//         year: 'numeric',
+//         month: 'short',
+//         day: 'numeric',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//         hour12: true
+//       });
+//     } catch (error) {
+//       return "Invalid Date";
+//     }
+//   };
+
+//   const getActionColor = (action: string) => {
+//     return action === "added" ? "#4caf50" : "#f44336";
+//   };
+
+//   const getActionIcon = (action: string) => {
+//     return action === "added" ? "+" : "-";
+//   };
+
+//   const getQuantityChange = (item: HistoryItem) => {
+//     const change = item.newQuantity - item.previousQuantity;
+//     return change > 0 ? `+${change}` : `${change}`;
+//   };
+
+//   const handleBack = () => {
+//     navigation.goBack();
+//   };
+
+//   if (loading) {
+//     return (
+//       <View style={[styles.container, styles.centered]}>
+//         <ActivityIndicator size="large" color="#2196f3" />
+//         <Text style={styles.loadingText}>Loading history...</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.header}>Technician Activity History</Text>
+      
+//       {history.length === 0 ? (
+//         <View style={styles.centered}>
+//           <Text style={styles.emptyText}>No activity history found</Text>
+//           <Text style={styles.emptySubText}>Start adding or removing items to see history</Text>
+//         </View>
+//       ) : (
+//         <FlatList
+//           data={history}
+//           keyExtractor={(item) => item.id}
+//           renderItem={({ item }) => (
+//             <View style={styles.card}>
+//               <View style={styles.cardHeader}>
+//                 <View style={styles.itemNameContainer}>
+//                   <Text style={styles.itemName}>{item.itemName}</Text>
+//                   <View style={[
+//                     styles.actionBadge,
+//                     { backgroundColor: getActionColor(item.action) }
+//                   ]}>
+//                     <Text style={styles.actionIcon}>
+//                       {getActionIcon(item.action)}
+//                     </Text>
+//                   </View>
+//                 </View>
+//                 <Text style={styles.dateText}>
+//                   {formatDate(item.date)}
+//                 </Text>
+//               </View>
+              
+//               <View style={styles.activityInfo}>
+//                 <View style={styles.quantityRow}>
+//                   <Text style={styles.quantityLabel}>Previous:</Text>
+//                   <Text style={styles.quantityValue}>{item.previousQuantity}</Text>
+//                 </View>
+//                 <View style={styles.quantityRow}>
+//                   <Text style={styles.quantityLabel}>Current:</Text>
+//                   <Text style={styles.quantityValue}>{item.newQuantity}</Text>
+//                 </View>
+//                 <View style={styles.quantityRow}>
+//                   <Text style={styles.quantityLabel}>Change:</Text>
+//                   <Text style={[
+//                     styles.changeValue,
+//                     { color: getActionColor(item.action) }
+//                   ]}>
+//                     {getQuantityChange(item)}
+//                   </Text>
+//                 </View>
+//               </View>
+              
+//               <View style={styles.actionContainer}>
+//                 <Text style={[
+//                   styles.actionText,
+//                   { color: getActionColor(item.action) }
+//                 ]}>
+//                   {item.action === "added" ? "ITEM ADDED" : "ITEM REMOVED"} BY TECHNICIAN
+//                 </Text>
+//               </View>
+//             </View>
+//           )}
+//           showsVerticalScrollIndicator={false}
+//           contentContainerStyle={{ paddingBottom: 100 }}
+//         />
+//       )}
+
+//       <View style={styles.footer}>
+//         <TouchableOpacity
+//           onPress={handleBack}
+//           style={styles.backButton}
+//         >
+//           <Text style={styles.backButtonText}>← Back to Inventory</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
+
+// export default InventoryHistory;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#f5f5f5",
+//     padding: 16,
+//   },
+//   centered: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   loadingText: {
+//     marginTop: 10,
+//     color: "#2196f3",
+//     fontSize: 16,
+//   },
+//   header: {
+//     fontSize: 22,
+//     fontWeight: "bold",
+//     color: "#000",
+//     marginBottom: 20,
+//     textAlign: "center",
+//   },
+//   card: {
+//     backgroundColor: "#ffffff",
+//     borderRadius: 12,
+//     padding: 16,
+//     marginBottom: 12,
+//     elevation: 2,
+//     shadowColor: "#000",
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 3,
+//     borderWidth: 1,
+//     borderColor: "#e0e0e0",
+//   },
+//   cardHeader: {
+//     marginBottom: 12,
+//   },
+//   itemNameContainer: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     justifyContent: "space-between",
+//     marginBottom: 6,
+//   },
+//   itemName: {
+//     fontSize: 18,
+//     fontWeight: "600",
+//     color: "#000",
+//     flex: 1,
+//   },
+//   actionBadge: {
+//     width: 28,
+//     height: 28,
+//     borderRadius: 14,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   actionIcon: {
+//     color: "#fff",
+//     fontSize: 18,
+//     fontWeight: "bold",
+//   },
+//   dateText: {
+//     fontSize: 13,
+//     color: "#666",
+//     fontStyle: "italic",
+//   },
+//   activityInfo: {
+//     backgroundColor: "#f8f9fa",
+//     borderRadius: 8,
+//     padding: 12,
+//     marginBottom: 12,
+//   },
+//   quantityRow: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginBottom: 4,
+//   },
+//   quantityLabel: {
+//     fontSize: 14,
+//     color: "#666",
+//     fontWeight: "500",
+//   },
+//   quantityValue: {
+//     fontSize: 14,
+//     color: "#000",
+//     fontWeight: "600",
+//   },
+//   changeValue: {
+//     fontSize: 14,
+//     fontWeight: "bold",
+//   },
+//   actionContainer: {
+//     borderTopWidth: 1,
+//     borderTopColor: "#e0e0e0",
+//     paddingTop: 8,
+//     alignItems: "center",
+//   },
+//   actionText: {
+//     fontSize: 12,
+//     fontWeight: "700",
+//     letterSpacing: 0.5,
+//   },
+//   emptyText: {
+//     fontSize: 18,
+//     color: "#666",
+//     textAlign: "center",
+//     marginBottom: 8,
+//   },
+//   emptySubText: {
+//     fontSize: 14,
+//     color: "#999",
+//     textAlign: "center",
+//   },
+//   footer: {
+//     position: "absolute",
+//     bottom: 20,
+//     left: 16,
+//     right: 16,
+//   },
+//   backButton: {
+//     backgroundColor: "#2196f3",
+//     paddingVertical: 14,
+//     borderRadius: 8,
+//     alignItems: "center",
+//   },
+//   backButtonText: {
+//     color: "#fff",
+//     fontSize: 16,
+//     fontWeight: "600",
+//   },
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { db } from '../../firebase/config'; // adjust if needed
+
+interface HistoryItem {
   id: string;
   itemName: string;
-  action: "added" | "removed";
+  action: string;
   previousQuantity: number;
   newQuantity: number;
-  date: string;
-  timestamp: any;
-  technicianId?: string;
-};
+  timestamp: string;
+}
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-const InventoryHistory = () => {
-  const navigation = useNavigation<NavigationProp>();
+export default function InventoryHistoryScreen() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const auth = getAuth();
+
   useEffect(() => {
+    const fetchHistory = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const q = query(
+          collection(db, 'inventory_history'),
+          where('technicianId', '==', user.uid)
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as HistoryItem[];
+
+        // Sort by newest first
+        const sorted = data.sort(
+          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+
+        setHistory(sorted);
+      } catch (error) {
+        console.error('Error fetching history:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchHistory();
   }, []);
 
-  const fetchHistory = async () => {
-  try {
-    setLoading(true);
-    const technicianId = auth.currentUser?.uid;
-
-    const q = query(
-      collection(db, "inventory_history"),
-      where("technicianId", "==", technicianId),
-      orderBy("timestamp", "desc")
-    );
-
-    const snapshot = await getDocs(q);
-    const data = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as HistoryItem[];
-    setHistory(data);
-  } catch (error) {
-    console.error("Error fetching history:", error);
-    Alert.alert("Error", "Failed to load history");
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleString('en-IN', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      });
-    } catch (error) {
-      return "Invalid Date";
-    }
-  };
-
-  const getActionColor = (action: string) => {
-    return action === "added" ? "#4caf50" : "#f44336";
-  };
-
-  const getActionIcon = (action: string) => {
-    return action === "added" ? "+" : "-";
-  };
-
-  const getQuantityChange = (item: HistoryItem) => {
-    const change = item.newQuantity - item.previousQuantity;
-    return change > 0 ? `+${change}` : `${change}`;
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
   if (loading) {
     return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color="#2196f3" />
-        <Text style={styles.loadingText}>Loading history...</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Technician Activity History</Text>
-      
+      <Text style={styles.title}>Inventory History</Text>
       {history.length === 0 ? (
-        <View style={styles.centered}>
-          <Text style={styles.emptyText}>No activity history found</Text>
-          <Text style={styles.emptySubText}>Start adding or removing items to see history</Text>
-        </View>
+        <Text style={styles.noHistoryText}>No history available.</Text>
       ) : (
         <FlatList
           data={history}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <View style={styles.card}>
-              <View style={styles.cardHeader}>
-                <View style={styles.itemNameContainer}>
-                  <Text style={styles.itemName}>{item.itemName}</Text>
-                  <View style={[
-                    styles.actionBadge,
-                    { backgroundColor: getActionColor(item.action) }
-                  ]}>
-                    <Text style={styles.actionIcon}>
-                      {getActionIcon(item.action)}
-                    </Text>
-                  </View>
-                </View>
-                <Text style={styles.dateText}>
-                  {formatDate(item.date)}
-                </Text>
-              </View>
-              
-              <View style={styles.activityInfo}>
-                <View style={styles.quantityRow}>
-                  <Text style={styles.quantityLabel}>Previous:</Text>
-                  <Text style={styles.quantityValue}>{item.previousQuantity}</Text>
-                </View>
-                <View style={styles.quantityRow}>
-                  <Text style={styles.quantityLabel}>Current:</Text>
-                  <Text style={styles.quantityValue}>{item.newQuantity}</Text>
-                </View>
-                <View style={styles.quantityRow}>
-                  <Text style={styles.quantityLabel}>Change:</Text>
-                  <Text style={[
-                    styles.changeValue,
-                    { color: getActionColor(item.action) }
-                  ]}>
-                    {getQuantityChange(item)}
-                  </Text>
-                </View>
-              </View>
-              
-              <View style={styles.actionContainer}>
-                <Text style={[
-                  styles.actionText,
-                  { color: getActionColor(item.action) }
-                ]}>
-                  {item.action === "added" ? "ITEM ADDED" : "ITEM REMOVED"} BY TECHNICIAN
-                </Text>
-              </View>
+              <Text style={styles.itemText}>
+                {item.itemName} - {item.action} ({item.previousQuantity} → {item.newQuantity})
+              </Text>
+              <Text style={styles.timestamp}>
+                {new Date(item.timestamp).toLocaleString()}
+              </Text>
             </View>
           )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 100 }}
         />
       )}
-
-      <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={handleBack}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>← Back to Inventory</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
-};
-
-export default InventoryHistory;
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 16,
+    backgroundColor: '#EAF2F8',
+    padding: 20,
   },
-  centered: {
+  loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  loadingText: {
-    marginTop: 10,
-    color: "#2196f3",
-    fontSize: 16,
-  },
-  header: {
+  title: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#000",
-    marginBottom: 20,
-    textAlign: "center",
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#333',
   },
   card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 15,
     marginBottom: 12,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
-  cardHeader: {
-    marginBottom: 12,
-  },
-  itemNameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 6,
-  },
-  itemName: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-    flex: 1,
-  },
-  actionBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  actionIcon: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  dateText: {
-    fontSize: 13,
-    color: "#666",
-    fontStyle: "italic",
-  },
-  activityInfo: {
-    backgroundColor: "#f8f9fa",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-  },
-  quantityRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  quantityLabel: {
-    fontSize: 14,
-    color: "#666",
-    fontWeight: "500",
-  },
-  quantityValue: {
-    fontSize: 14,
-    color: "#000",
-    fontWeight: "600",
-  },
-  changeValue: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  actionContainer: {
-    borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
-    paddingTop: 8,
-    alignItems: "center",
-  },
-  actionText: {
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  emptyText: {
-    fontSize: 18,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  emptySubText: {
-    fontSize: 14,
-    color: "#999",
-    textAlign: "center",
-  },
-  footer: {
-    position: "absolute",
-    bottom: 20,
-    left: 16,
-    right: 16,
-  },
-  backButton: {
-    backgroundColor: "#2196f3",
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  backButtonText: {
-    color: "#fff",
+  itemText: {
     fontSize: 16,
-    fontWeight: "600",
+    color: '#333',
+  },
+  timestamp: {
+    fontSize: 13,
+    color: '#888',
+    marginTop: 5,
+  },
+  noHistoryText: {
+    fontSize: 16,
+    color: '#777',
+    textAlign: 'center',
+    marginTop: 30,
   },
 });
