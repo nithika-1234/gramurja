@@ -101,7 +101,10 @@
 //     fontWeight: '500',
 //   },
 // });
+import { useRouter } from 'expo-router';
 
+import { useLocalSearchParams } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -114,8 +117,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/config'; // adjust if your config file is elsewhere
 
 export default function LoginForm() {
@@ -124,6 +125,7 @@ export default function LoginForm() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -137,7 +139,7 @@ export default function LoginForm() {
       if (role === 'technician') {
         router.replace('/technician/TechnicianDashboard');
       } else {
-        router.replace('/Home'); // Replace with customer dashboard if needed
+        router.replace('/customer/CustomerHome'); // Replace with customer dashboard if needed
       }
     } catch (error: any) {
       Alert.alert('Login Failed', error.message);
@@ -151,7 +153,7 @@ export default function LoginForm() {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
+        <Image source={require('../../assets/images/gramurja-logo.png')} style={styles.logo} />
         <Text style={styles.title}>GramUrja</Text>
         <Text style={styles.roleText}>Logging in as: {role === 'technician' ? 'Technician' : 'Customer'}</Text>
       </View>

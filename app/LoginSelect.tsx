@@ -14,7 +14,7 @@ export default function LoginSelect() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/images/icon.png')} 
+        source={require('../assets/images/gramurja-logo.png')} 
         style={styles.logo}
       />
       <Text style={styles.title}>Login as</Text>
