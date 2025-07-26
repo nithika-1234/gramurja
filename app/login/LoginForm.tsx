@@ -182,8 +182,8 @@
 //   },
 // });
 
-import { db } from '../../firebase/config';//new
-import { doc, getDoc } from 'firebase/firestore';//new
+import { doc, getDoc } from 'firebase/firestore'; //new
+import { db } from '../../firebase/config'; //new
 
 
 
@@ -191,7 +191,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -199,7 +198,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { auth } from '../../firebase/config';
 

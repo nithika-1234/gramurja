@@ -38,7 +38,7 @@ export default function CompleteProfile() {
         area,
         email: user?.email || '',
         createdAt: serverTimestamp(),
-        rating: 0, // Auto calculated later
+        rating: 3, // Auto calculated later
         projectsCompleted: Number(projectsCompleted),
         currentlyWorking: Number(currentlyWorking),
       });
