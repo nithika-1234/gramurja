@@ -147,152 +147,278 @@
 
 
 
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Button,
-} from 'react-native';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { RootStackParamList } from '../App';
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   FlatList,
+//   TouchableOpacity,
+//   StyleSheet,
+//   Button,
+// } from 'react-native';
+// import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+// import { RootStackParamList } from '../App';
 
-type OptionSelectedScreenRouteProp = RouteProp<
-  RootStackParamList,
-  'OptionSelectedScreen'
->;
+// type OptionSelectedScreenRouteProp = RouteProp<
+//   RootStackParamList,
+//   'OptionSelectedScreen'
+// >;
+// type InventoryItem = {
+//   id: string;
+//   name: string;
+//   quantity: number;
+//   unit: string;
+//   price: number;
+//   option: boolean;
+// };
+
+
+// export default function OptionSelectedScreen() {
+//   const route = useRoute<OptionSelectedScreenRouteProp>();
+//   const navigation = useNavigation();
+// const {selectedItems}=  route.params;
+
+//   const [quantities, setQuantities] = useState(
+//     selectedItems.reduce((acc, item) => {
+//       acc[item.id] = item.quantity || 1;
+//       return acc;
+//     }, {} as Record<string, number>)
+//   );
+
+//   const handleAdd = (id: string) => {
+//     setQuantities((prev) => ({
+//       ...prev,
+//       [id]: prev[id] + 1,
+//     }));
+//   };
+
+//   const handleRemove = (id: string) => {
+//     setQuantities((prev) => ({
+//       ...prev,
+//       [id]: Math.max(1, prev[id] - 1), // Min 1
+//     }));
+//   };
+
+//   const renderItem = ({ item }: { item: typeof selectedItems[0] }) => (
+//     <View style={styles.itemContainer}>
+//       <Text style={styles.itemName}>{item.name}</Text>
+//       <View style={styles.controls}>
+//         <TouchableOpacity
+//           onPress={() => handleRemove(item.id)}
+//           style={styles.button}
+//         >
+//           <Text style={styles.buttonText}>➖</Text>
+//         </TouchableOpacity>
+
+//         <Text style={styles.quantity}>{quantities[item.id]}</Text>
+
+//         <TouchableOpacity
+//           onPress={() => handleAdd(item.id)}
+//           style={styles.button}
+//         >
+//           <Text style={styles.buttonText}>➕</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+
+//   return (
+//     <View style={styles.container}>
+//       <FlatList
+//         data={selectedItems}
+//         keyExtractor={(item) => item.id}
+//         renderItem={renderItem}
+//         contentContainerStyle={styles.list}
+//       />
+
+//       <TouchableOpacity
+//         style={styles.historyButton}
+//         onPress={() => navigation.navigate('InventoryHistory' as never)}
+//       >
+//         <Text style={styles.historyButtonText}>View History</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#F3F9F1',
+//     padding: 16,
+//   },
+//   list: {
+//     paddingBottom: 20,
+//   },
+//   itemContainer: {
+//     backgroundColor: '#fff',
+//     padding: 16,
+//     marginVertical: 8,
+//     borderRadius: 12,
+//     shadowColor: '#000',
+//     shadowOpacity: 0.1,
+//     shadowRadius: 6,
+//     elevation: 2,
+//   },
+//   itemName: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     marginBottom: 8,
+//   },
+//   controls: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//   },
+//   quantity: {
+//     fontSize: 16,
+//     marginHorizontal: 10,
+//     color: '#333',
+//   },
+//   button: {
+//     backgroundColor: '#e0f2f1',
+//     paddingHorizontal: 12,
+//     paddingVertical: 6,
+//     borderRadius: 8,
+//   },
+//   buttonText: {
+//     fontSize: 18,
+//   },
+//   historyButton: {
+//     marginTop: 20,
+//     backgroundColor: '#2196F3',
+//     padding: 14,
+//     borderRadius: 10,
+//     alignItems: 'center',
+//   },
+//   historyButtonText: {
+//     color: '#fff',
+//     fontWeight: '600',
+//     fontSize: 16,
+//   },
+// });
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+
 type InventoryItem = {
   id: string;
   name: string;
+  option: boolean;
+  price: number;
   quantity: number;
   unit: string;
-  price: number;
-  option: boolean;
+  usedQuantity?: number;
 };
 
+type RouteParams = {
+  params: {
+    selectedItems: InventoryItem[];
+  };
+};
 
 export default function OptionSelectedScreen() {
-  const route = useRoute<OptionSelectedScreenRouteProp>();
-  const navigation = useNavigation();
-const {selectedItems}=  route.params;
+  const route = useRoute<RouteProp<RouteParams, 'params'>>();
+  const selectedItems = route?.params?.selectedItems ?? [];
 
-  const [quantities, setQuantities] = useState(
-    selectedItems.reduce((acc, item) => {
-      acc[item.id] = item.quantity || 1;
-      return acc;
-    }, {} as Record<string, number>)
+  const [items, setItems] = useState<InventoryItem[]>(
+    selectedItems.map(item => ({
+      ...item,
+      usedQuantity: 0,
+    }))
   );
 
   const handleAdd = (id: string) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: prev[id] + 1,
-    }));
+    setItems(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, usedQuantity: (item.usedQuantity || 0) + 1 } : item
+      )
+    );
   };
 
   const handleRemove = (id: string) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max(1, prev[id] - 1), // Min 1
-    }));
+    setItems(prev =>
+      prev.map(item =>
+        item.id === id && (item.usedQuantity || 0) > 0
+          ? { ...item, usedQuantity: item.usedQuantity! - 1 }
+          : item
+      )
+    );
   };
 
-  const renderItem = ({ item }: { item: typeof selectedItems[0] }) => (
-    <View style={styles.itemContainer}>
+  const renderItem = ({ item }: { item: InventoryItem }) => (
+    <View style={styles.itemRow}>
       <Text style={styles.itemName}>{item.name}</Text>
-      <View style={styles.controls}>
-        <TouchableOpacity
-          onPress={() => handleRemove(item.id)}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>➖</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.quantity}>{quantities[item.id]}</Text>
-
-        <TouchableOpacity
-          onPress={() => handleAdd(item.id)}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>➕</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.qty}>{item.usedQuantity}</Text>
+      <TouchableOpacity style={styles.addBtn} onPress={() => handleAdd(item.id)}>
+        <Text style={styles.btnText}>Add</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(item.id)}>
+        <Text style={styles.btnText}>Remove</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Inventory Management</Text>
       <FlatList
-        data={selectedItems}
+        data={items}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={styles.list}
       />
-
-      <TouchableOpacity
-        style={styles.historyButton}
-        onPress={() => navigation.navigate('InventoryHistory' as never)}
-      >
-        <Text style={styles.historyButtonText}>View History</Text>
+      <TouchableOpacity style={styles.historyBtn}>
+        <Text style={styles.historyText}>View History</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F9F1',
-    padding: 16,
+  container: { flex: 1, padding: 12 },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    marginVertical: 10
   },
-  list: {
-    paddingBottom: 20,
-  },
-  itemContainer: {
-    backgroundColor: '#fff',
-    padding: 16,
-    marginVertical: 8,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  controls: {
+  itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    marginBottom: 12,
+    justifyContent: 'space-between'
   },
-  quantity: {
-    fontSize: 16,
-    marginHorizontal: 10,
-    color: '#333',
+  itemName: { flex: 1, fontSize: 16 },
+  qty: { fontSize: 16, marginHorizontal: 8 },
+  addBtn: {
+    backgroundColor: 'purple',
+    padding: 8,
+    borderRadius: 5,
   },
-  button: {
-    backgroundColor: '#e0f2f1',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
+  removeBtn: {
+    backgroundColor: 'red',
+    padding: 8,
+    borderRadius: 5,
+    marginLeft: 8,
   },
-  buttonText: {
-    fontSize: 18,
-  },
-  historyButton: {
-    marginTop: 20,
-    backgroundColor: '#2196F3',
+  btnText: { color: 'white' },
+  historyBtn: {
+    backgroundColor: '#007bff',
     padding: 14,
-    borderRadius: 10,
+    borderRadius: 6,
     alignItems: 'center',
+    marginTop: 20,
   },
-  historyButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
+  historyText: {
+    color: 'white',
+    fontSize: 16
+  }
 });

@@ -154,7 +154,7 @@ export type RootStackParamList = {
       name: string;
       unit: string;
       price: number;
-      option?: boolean;
+      option: boolean;
       quantity: number;
     }[];
   };

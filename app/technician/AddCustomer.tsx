@@ -1,20 +1,110 @@
-//     // app/technician/AddCustomer.tsx
+// //     // app/technician/AddCustomer.tsx
+// // import { useRouter } from 'expo-router';
+// // import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+// // export default function AddCustomer() {
+// //   const router = useRouter();
+
+// //   return (
+// //     <View style={styles.container}>
+// //       <Text style={styles.heading}>New Installation</Text>
+
+// //       <TextInput placeholder="Customer Name" style={styles.input} />
+// //       <TextInput placeholder="Address" style={styles.input} />
+// //       <TextInput placeholder="System Size (kW)" keyboardType="numeric" style={styles.input} />
+// //       <TextInput placeholder="Status (e.g., Installed, Pending)" style={styles.input} />
+
+// //       <TouchableOpacity style={styles.submitButton}>
+// //         <Text style={styles.submitText}>SUBMIT</Text>
+// //       </TouchableOpacity>
+
+// //       <TouchableOpacity onPress={() => router.back()}>
+// //         <Text style={styles.back}>⬅ Back</Text>
+// //       </TouchableOpacity>
+// //     </View>
+// //   );
+// // }
+
+
 // import { useRouter } from 'expo-router';
-// import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+// import { useState } from 'react';
+// import { query, where, getDocs } from 'firebase/firestore';
+
+// import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+// import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+// import { getAuth } from 'firebase/auth'; 
+// import { auth, db } from '../../firebase/config';
 
 // export default function AddCustomer() {
 //   const router = useRouter();
 
+//   // 🔹 State for input fields
+//   const [name, setName] = useState('');
+//   const [address, setAddress] = useState('');
+//   const [systemSize, setSystemSize] = useState('');
+//   const [status, setStatus] = useState('');
+//   const [contact,setContact] = useState('');
+// const [loading, setLoading] = useState(false);
+
+//   const handleSubmit = async () => {
+//      if (loading) return;
+//   setLoading(true);
+//     if (!name || !address || !systemSize || !status||!contact) {
+//       Alert.alert('Error', 'Please fill all fields');
+//       return;
+//     }
+
+//     const technician = getAuth().currentUser;
+
+//     if (!technician) {
+//       Alert.alert('Error', 'Technician not logged in');
+//       return;
+//     }
+
+// try {
+//     // 🔍 Check if customer with same name exists for this technician
+//     const customerQuery = query(
+//   collection(db, 'customers'),
+//   where('name', '==', name),
+//     // where('technicianId', '==', technician.uid)  
+
+// );
+//     const querySnapshot = await getDocs(customerQuery);
+
+//     if (!querySnapshot.empty) {
+//       Alert.alert('Duplicate Entry', 'Customer with this name already exists');
+//       return;
+//     }
+
+//     // ✅ Add new customer
+//     await addDoc(collection(db, 'customers'), {
+//       name,
+//       address,
+//       systemSize,
+//       status,
+//       contact,
+//       technicianId: technician.uid,
+//       createdAt: serverTimestamp(),
+//     });
+
+//     Alert.alert('Success', 'Customer added successfully', [
+//   { text: 'OK', onPress: () => router.back() }
+// ]);
+//   } catch (error) {
+//     console.error('Error adding document: ', error);
+//     Alert.alert('Error', 'Failed to add customer');
+//   }
+// };
 //   return (
 //     <View style={styles.container}>
 //       <Text style={styles.heading}>New Installation</Text>
 
-//       <TextInput placeholder="Customer Name" style={styles.input} />
-//       <TextInput placeholder="Address" style={styles.input} />
-//       <TextInput placeholder="System Size (kW)" keyboardType="numeric" style={styles.input} />
-//       <TextInput placeholder="Status (e.g., Installed, Pending)" style={styles.input} />
-
-//       <TouchableOpacity style={styles.submitButton}>
+//       <TextInput placeholder="Customer Name" style={styles.input} value={name} onChangeText={setName} />
+//       <TextInput placeholder="Address" style={styles.input} value={address} onChangeText={setAddress} />
+//       <TextInput placeholder="System Size (kW)" keyboardType="numeric" style={styles.input} value={systemSize} onChangeText={setSystemSize} />
+//       <TextInput placeholder="Status (e.g., Installed, Pending)" style={styles.input} value={status} onChangeText={setStatus} />
+//  <TextInput placeholder="Contact Number" style={styles.input} value={contact} onChangeText={setContact}  />
+//        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
 //         <Text style={styles.submitText}>SUBMIT</Text>
 //       </TouchableOpacity>
 
@@ -25,76 +115,155 @@
 //   );
 // }
 
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#E6F4EA',
+//     padding: 20,
+//     justifyContent: 'center',
+//   },
+//   heading: {
+//     fontSize: 26,
+//     fontWeight: '700',
+//     marginBottom: 24,
+//     textAlign: 'center',
+//     color: '#1B4332',
+//   },
+//   input: {
+//     backgroundColor: '#fff',
+//     padding: 15,
+//     borderRadius: 12,
+//     marginBottom: 16,
+//     fontSize: 16,
+//     borderColor: '#D1D5DB',
+//     borderWidth: 1,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 4,
+//     elevation: 2,
+//   },
+//   submitButton: {
+//     backgroundColor: '#1B4332',
+//     padding: 16,
+//     borderRadius: 12,
+//     alignItems: 'center',
+//     marginTop: 10,
+//     width: '100%',
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 3 },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 6,
+//     elevation: 5,
+//   },
+//   submitText: {
+//     color: '#fff',
+//     fontSize: 18,
+//     fontWeight: '700',
+//     letterSpacing: 0.5,
+//   },
+//   back: {
+//     marginTop: 24,
+//     textAlign: 'center',
+//     color: '#4B5563',
+//     fontSize: 16,
+//   },
+// });
+
+
+
+
+
+
+
+
+
+
+
 
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { query, where, getDocs } from 'firebase/firestore';
-
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { getAuth } from 'firebase/auth';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth'; 
-import { auth, db } from '../../firebase/config';
+import { useState } from 'react';
+import {
+  Alert,
+  StyleSheet, Text, TextInput, TouchableOpacity, View,
+} from 'react-native';
+import { db } from '../../firebase/config';
 
 export default function AddCustomer() {
   const router = useRouter();
-
-  // 🔹 State for input fields
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [systemSize, setSystemSize] = useState('');
-  const [status, setStatus] = useState('');
-  const [contact,setContact] = useState('');
-const [loading, setLoading] = useState(false);
+  const [statusNote, setStatusNote] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState('');
+
 
   const handleSubmit = async () => {
-     if (loading) return;
-  setLoading(true);
-    if (!name || !address || !systemSize || !status||!contact) {
+    if (loading) return;
+    setLoading(true);
+
+    if (!name || !address || !systemSize || !statusNote) {
       Alert.alert('Error', 'Please fill all fields');
+      setLoading(false);
       return;
     }
 
     const technician = getAuth().currentUser;
-
     if (!technician) {
       Alert.alert('Error', 'Technician not logged in');
+      setLoading(false);
       return;
     }
 
-try {
-    // 🔍 Check if customer with same name exists for this technician
-    const customerQuery = query(
-  collection(db, 'customers'),
-  where('name', '==', name),
-    // where('technicianId', '==', technician.uid)  
+    const technicianName = technician.displayName || 'Unknown';
 
-);
-    const querySnapshot = await getDocs(customerQuery);
+    const defaultStatus = {
+      requestApproved: {
+        done: true,
+        timestamp: new Date().toISOString(),
+      },
+      installed: {
+        done: false,
+        timestamp: null,
+      },
+      docsSubmitted: {
+        done: false,
+        timestamp: null,
+      },
+    };
 
-    if (!querySnapshot.empty) {
-      Alert.alert('Duplicate Entry', 'Customer with this name already exists');
-      return;
+    try {
+      await addDoc(collection(db, 'customers'), {
+        name,
+        address,
+        systemSize,
+        status: statusNote,
+        technicianId: technician.uid,
+              
+        technicianName: technicianName,
+        
+        // added here
+        email: customerEmail,
+
+        createdAt: serverTimestamp(),
+        billUrl: '',
+        statusRoadmap: defaultStatus,
+      });
+
+      Alert.alert('Success', 'Customer added successfully', [
+        { text: 'OK', onPress: () => router.back() },
+      ]);
+    } catch (error) {
+      console.error('Error adding customer:', error);
+      Alert.alert('Error', 'Failed to add customer');
     }
 
-    // ✅ Add new customer
-    await addDoc(collection(db, 'customers'), {
-      name,
-      address,
-      systemSize,
-      status,
-      contact,
-      technicianId: technician.uid,
-      createdAt: serverTimestamp(),
-    });
+    setLoading(false);
+  };
 
-    Alert.alert('Success', 'Customer added successfully', [
-  { text: 'OK', onPress: () => router.back() }
-]);
-  } catch (error) {
-    console.error('Error adding document: ', error);
-    Alert.alert('Error', 'Failed to add customer');
-  }
-};
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>New Installation</Text>
@@ -102,9 +271,22 @@ try {
       <TextInput placeholder="Customer Name" style={styles.input} value={name} onChangeText={setName} />
       <TextInput placeholder="Address" style={styles.input} value={address} onChangeText={setAddress} />
       <TextInput placeholder="System Size (kW)" keyboardType="numeric" style={styles.input} value={systemSize} onChangeText={setSystemSize} />
-      <TextInput placeholder="Status (e.g., Installed, Pending)" style={styles.input} value={status} onChangeText={setStatus} />
- <TextInput placeholder="Contact Number" style={styles.input} value={contact} onChangeText={setContact}  />
-       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+      <TextInput placeholder="Status (e.g., Installed, Pending)" style={styles.input} value={statusNote} onChangeText={setStatusNote} />
+
+
+
+{/* added here */}
+
+      <TextInput
+  placeholder="Customer Email"
+  style={styles.input}
+  keyboardType="email-address"
+  value={customerEmail}
+  onChangeText={setCustomerEmail}
+/>
+
+
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitText}>SUBMIT</Text>
       </TouchableOpacity>
 
@@ -116,56 +298,16 @@ try {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#E6F4EA',
-    padding: 20,
-    justifyContent: 'center',
-  },
-  heading: {
-    fontSize: 26,
-    fontWeight: '700',
-    marginBottom: 24,
-    textAlign: 'center',
-    color: '#1B4332',
-  },
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  heading: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   input: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 16,
-    fontSize: 16,
-    borderColor: '#D1D5DB',
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: '#F0F0F0', padding: 12, borderRadius: 8,
+    marginBottom: 16, fontSize: 15, borderColor: '#ccc', borderWidth: 1, width: '40%', marginLeft: '30%',
   },
   submitButton: {
-    backgroundColor: '#1B4332',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 10,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 5,
+    backgroundColor: '#283593', padding: 15, borderRadius: 10,
+    alignItems: 'center', marginTop: 10, width: '40%', marginLeft: '30%',
   },
-  submitText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  back: {
-    marginTop: 24,
-    textAlign: 'center',
-    color: '#4B5563',
-    fontSize: 16,
-  },
+  submitText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  back: { marginTop: 20, textAlign: 'center', color: '#555' },
 });
