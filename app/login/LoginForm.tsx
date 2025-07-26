@@ -182,6 +182,8 @@
 //   },
 // });
 
+import { db } from '../../firebase/config';//new
+import { doc, getDoc } from 'firebase/firestore';//new
 
 
 
@@ -209,11 +211,9 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(''); // 🔴 Error state
-
   const handleLogin = async () => {
-  setLoginError(''); // Reset previous error
+  setLoginError('');
 
-  // 🔴 Check email format
   if (!email || !password) {
     setLoginError('Please enter both email and password.');
     return;
@@ -226,35 +226,21 @@ export default function LoginForm() {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    setLoginError(''); // ✅ Clear error on success
-
-  Alert.alert(
-  'Login Successful',
-  `Welcome, ${role}!`,
-  [
-    {
-      text: 'OK',
-      onPress: () => {
-        if (role === 'technician') {
-          router.replace('/technician/TechnicianDashboard');
-        } else {
-          router.replace('/Home');
-        }
-      }
-    }
-  ],
-  { cancelable: false }
-);
+    const user = auth.currentUser;
 
     if (role === 'technician') {
-      router.replace('/technician/TechnicianDashboard');
+      const techRef = doc(db, 'technicians', user?.uid!);
+      const techSnap = await getDoc(techRef);
+
+      if (techSnap.exists()) {
+        router.replace('/technician/TechnicianDashboard');
+      } else {
+        router.replace('/technician/CompleteProfile');
+      }
     } else {
-      router.replace('/Home');
+      router.replace('/customer/CustomerDashboard');
     }
   } catch (error: any) {
-    console.log(error.code);
-
-    // 🔴 Handle specific Firebase auth errors
     switch (error.code) {
       case 'auth/user-not-found':
         setLoginError('User not registered.');
@@ -270,6 +256,70 @@ export default function LoginForm() {
     }
   }
 };
+
+//   const handleLogin = async () => {
+//   setLoginError(''); // Reset previous error
+
+//   // 🔴 Check email format
+//   if (!email || !password) {
+//     setLoginError('Please enter both email and password.');
+//     return;
+//   }
+
+//   if (!email.endsWith('@gmail.com')) {
+//     setLoginError('Please enter a valid Gmail address.');
+//     return;
+//   }
+
+//   try {
+//     await signInWithEmailAndPassword(auth, email, password);
+//     setLoginError(''); // ✅ Clear error on success
+//     const userRef = doc(db, 'users', email); // Assumes document ID is email
+     
+
+//   Alert.alert(
+//   'Login Successful',
+//   `Welcome, ${role}!`,
+//   [
+//     {
+//       text: 'OK',
+//       onPress: () => {
+//         if (role === 'technician') {//new
+          
+//           router.replace('/technician/TechnicianDashboard');
+//         } else {
+//           router.replace('/Home');
+//         }
+//       }
+//     }
+//   ],
+//   { cancelable: false }
+// );
+
+//     if (role === 'technician') {
+//       router.replace('/technician/TechnicianDashboard');
+//     } else {
+//       router.replace('/Home');
+//     }
+//   } catch (error: any) {
+//     console.log(error.code);
+
+//     // 🔴 Handle specific Firebase auth errors
+//     switch (error.code) {
+//       case 'auth/user-not-found':
+//         setLoginError('User not registered.');
+//         break;
+//       case 'auth/wrong-password':
+//         setLoginError('Incorrect password.');
+//         break;
+//       case 'auth/invalid-email':
+//         setLoginError('Invalid email format.');
+//         break;
+//       default:
+//         setLoginError('Login failed. Please try again.');
+//     }
+//   }
+// };
 
 
   const handleForgotPassword = () => {
