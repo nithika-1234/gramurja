@@ -237,7 +237,7 @@ export default function LoginForm() {
         router.replace('/technician/CompleteProfile');
       }
     } else {
-      router.replace('/customer/CustomerDashboard');
+      router.replace('/customer/CustomerHome');
     }
   } catch (error: any) {
     switch (error.code) {

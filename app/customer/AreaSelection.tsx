@@ -1,11 +1,11 @@
-// customer/CustomerDashboard.tsx
+// customer/AreaSelection.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 
 const areas = ['Mangalore', 'Chikamagaluru', 'Mysuru', 'Hassan', 'Davangere'];
 
-export default function CustomerDashboard() {
+export default function AreaSelection() {
   const router = useRouter();
 
   const handleAreaSelect = (area: string) => {
