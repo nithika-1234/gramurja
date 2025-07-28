@@ -1,101 +1,183 @@
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { db } from '../../firebase/config';
 
-// import { useRouter } from 'expo-router';
-// import { collection, getDocs } from 'firebase/firestore';
-// import { useEffect, useState } from 'react';
-// import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// import { db } from '../../firebase/config'; // adjust path if needed
+type Customer = {
+  id: string;
+  name: string;
+  address: string;
+  systemSize: string;
+  technicianId: string;
+  technicianName: string;
+  createdAt: any; // Firebase Timestamp
+};
 
-// export default function ViewCustomers() {
-//   const [customers, setCustomers] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const router = useRouter();
+export default function ViewCustomers() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<'recent' | 'all'>('recent');
 
-//   useEffect(() => {
-//     const fetchCustomers = async () => {
-//       try {
-//         const snapshot = await getDocs(collection(db, 'customers'));
-//         const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//         setCustomers(list);
-//       } catch (error) {
-//         console.error('Error fetching customers:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
+  const fetchCustomers = async (recentOnly: boolean) => {
+    setLoading(true);
+    const technicianId = getAuth().currentUser?.uid;
 
-//     fetchCustomers();
-//   }, []);
+    let q;
+    if (recentOnly) {
+      const tenDaysAgo = Timestamp.fromDate(new Date(Date.now() - 10 * 24 * 60 * 60 * 1000));
+      q = query(
+        collection(db, 'customers'),
+        where('technicianId', '==', technicianId),
+        where('createdAt', '>=', tenDaysAgo)
+      );
+    } else {
+      q = query(
+        collection(db, 'customers'),
+        where('technicianId', '==', technicianId)
+      );
+    }
 
-//   const renderItem = ({ item }) => (
-//     <View style={styles.card}>
-//       <Text style={styles.name}>👤 {item.name}</Text>
-//       <Text>📍 {item.address}</Text>
-//       <Text>⚡ System Size: {item.systemSize} kW</Text>
-//       <Text>📞 Contact: {item.phone || 'N/A'}</Text>
+    try {
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Customer[];
 
-//       <View style={styles.buttonRow}>
-//         <TouchableOpacity
-//           onPress={() => router.push(`/technician/update/${item.id}`)}
-//           style={styles.button}
-//         >
-//           <Text style={styles.buttonText}>Update</Text>
-//         </TouchableOpacity>
+      setCustomers(data);
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    }
+    setLoading(false);
+  };
 
-//         <TouchableOpacity
-//           onPress={() => router.push(`/technician/status/${item.id}`)}
-//           style={[styles.button, { backgroundColor: '#00796B' }]}
-//         >
-//           <Text style={styles.buttonText}>Status</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
+  useEffect(() => {
+    fetchCustomers(selectedOption === 'recent');
+  }, [selectedOption]);
 
-//   return loading ? (
-//     <View style={styles.loaderContainer}>
-//       <ActivityIndicator size="large" color="#283593" />
-//       <Text>Loading Customers...</Text>
-//     </View>
-//   ) : (
-//     <FlatList
-//       data={customers}
-//       keyExtractor={(item) => item.id}
-//       renderItem={renderItem}
-//       contentContainerStyle={{ padding: 20 }}
-//     />
-//   );
-// }
+  const renderCustomer = ({ item }: { item: Customer }) => (
+    <View style={styles.card}>
+      <Text style={styles.name}>👤 {item.name}</Text>
+      <Text>📍 <Text style={{ fontWeight: '600' }}>Address:</Text> {item.address}</Text>
+      <Text>🔋 <Text style={{ fontWeight: '600' }}>System Size:</Text> {item.systemSize}</Text>
+      <Text>📅 <Text style={{ fontWeight: '600' }}>Date:</Text> {item.createdAt?.toDate().toLocaleDateString()}</Text>
+    </View>
+  );
 
-// const styles = StyleSheet.create({
-//   loaderContainer: {
-//     flex: 1, alignItems: 'center', justifyContent: 'center'
-//   },
-//   card: {
-//     backgroundColor: '#F5F5F5',
-//     padding: 15,
-//     borderRadius: 10,
-//     marginBottom: 20,
-//     elevation: 3,
-//   },
-//   name: {
-//     fontWeight: 'bold',
-//     fontSize: 18,
-//     marginBottom: 6,
-//   },
-//   buttonRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'flex-start',
-//     marginTop: 12,
-//   },
-//   button: {
-//     backgroundColor: '#3F51B5',
-//     paddingVertical: 8,
-//     paddingHorizontal: 16,
-//     borderRadius: 8,
-//     marginRight: 10,
-//   },
-//   buttonText: { 
-//     color: '#fff',
-//     fontWeight: '600',
-//   },
-// });
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>View Customers</Text>
+
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={[styles.tabButton, selectedOption === 'recent' && styles.selectedTab]}
+          onPress={() => setSelectedOption('recent')}
+        >
+          <Text style={styles.tabText}>Recent Projects</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.tabButton, selectedOption === 'all' && styles.selectedTab]}
+          onPress={() => setSelectedOption('all')}
+        >
+          <Text style={styles.tabText}>View History</Text>
+        </Pressable>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 30 }} />
+      ) : customers.length === 0 ? (
+        <Text style={styles.noData}>No customers found.</Text>
+      ) : (
+        <FlatList
+          data={customers}
+          keyExtractor={(item) => item.id}
+          renderItem={renderCustomer}
+          contentContainerStyle={styles.list}
+        />
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E8F5E9',
+    padding: 20,
+    paddingTop: 50,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#065F46',
+    marginBottom: 25,
+    alignSelf: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    width: '100%',
+    paddingHorizontal: 20,
+  },
+  tabButton: {
+    flex: 1,
+    backgroundColor: '#02be09ff',
+    paddingVertical: 18,
+    marginHorizontal: 8,
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  selectedTab: {
+    backgroundColor: '#78ba7bff',
+  },
+  tabText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  list: {
+    paddingVertical: 20,
+    width: '100%',
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 15,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#C8E6C9',
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2E7D32',
+    marginBottom: 8,
+  },
+  noData: {
+    fontSize: 16,
+    color: '#888',
+    marginTop: 30,
+    alignSelf: 'center',
+  },
+});

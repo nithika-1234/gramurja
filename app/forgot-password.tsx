@@ -113,9 +113,11 @@ export default function ForgotPassword() {
 
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, email, {
-        url: 'https://gramurja-ea1db.firebaseapp.com/__/auth/action',
-      });
+      // await sendPasswordResetEmail(auth, email, {
+      //   url: 'https://gramurja-ea1db.firebaseapp.com/__/auth/action',
+      // });
+      await sendPasswordResetEmail(auth, email);
+
       Alert.alert('Success', 'Password reset email sent!');
       setEmail('');
     } catch (error: any) {
