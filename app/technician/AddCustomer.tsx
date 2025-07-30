@@ -170,3 +170,4 @@ const styles = StyleSheet.create({
   submitText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   back: { marginTop: 20, textAlign: 'center', color: '#555' },
 });
+
