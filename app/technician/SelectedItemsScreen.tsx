@@ -1,288 +1,289 @@
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Checkbox } from "react-native-paper";
-import { db } from "../../firebase/config";
-import { RootStackParamList } from "../App";
+//Correct latest
+// import { useNavigation } from "@react-navigation/native";
+// import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+// import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+// import React, { useEffect, useState } from "react";
+// import {
+//   ActivityIndicator,
+//   Alert,
+//   ScrollView,
+//   StyleSheet,
+//   Text,
+//   TouchableOpacity,
+//   View,
+// } from "react-native";
+// import { Checkbox } from "react-native-paper";
+// import { db } from "../../firebase/config";
+// import { RootStackParamList } from "../App";
 
-type InventoryItem = {
-  id: string;
-  name: string;
-  quantity: number;
-  unit: string;
-  price: number;
-  option: boolean;
-};
+// type InventoryItem = {
+//   id: string;
+//   name: string;
+//   quantity: number;
+//   unit: string;
+//   price: number;
+//   option: boolean;
+// };
 
-type NavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "SelectedItemsScreen"
->;
+// type NavigationProp = NativeStackNavigationProp<
+//   RootStackParamList,
+//   "SelectedItemsScreen"
+// >;
 
-const SelectedItemsScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
-  const [items, setItems] = useState<InventoryItem[]>([]);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
+// const SelectedItemsScreen = () => {
+//   const navigation = useNavigation<NavigationProp>();
+//   const [items, setItems] = useState<InventoryItem[]>([]);
+//   const [selected, setSelected] = useState<Set<string>>(new Set());
+//   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  const fetchInventory = async () => {
-    try {
-      setLoading(true);
-      const snapshot = await getDocs(collection(db, "inventory_items"));
-      const data = snapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() } as InventoryItem;
-      });
-      setItems(data);
-      setSelected(new Set()); // nothing selected initially
-    } catch (error) {
-      console.error("Error fetching inventory:", error);
-      Alert.alert("Error", "Failed to load inventory items");
-    } finally {
-      setLoading(false);
-    }
-  };
+//  useEffect(() => {
+//   const fetchInventory = async () => {
+//     try {
+//       setLoading(true);
+//       const snapshot = await getDocs(collection(db, "inventory_items"));
+//       const data = snapshot.docs.map((doc) => {
+//         return { id: doc.id, ...doc.data() } as InventoryItem;
+//       });
+//       setItems(data);
+//       setSelected(new Set()); // nothing selected initially
+//     } catch (error) {
+//       console.error("Error fetching inventory:", error);
+//       Alert.alert("Error", "Failed to load inventory items");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  fetchInventory();
-}, []);
-
-
-  const updateOptionInFirebase = async (id: string, value: boolean) => {
-    try {
-      const itemRef = doc(db, "inventory_items", id);
-      await updateDoc(itemRef, { option: value });
-    } catch (error) {
-      console.error("Failed to update option for item ${id}:", error);
-    }
-  };
-
-  const toggleSelect = (id: string) => {
-  setSelected((prev) => {
-    const copy = new Set(prev);
-    if (copy.has(id)) {
-      copy.delete(id);
-    } else {
-      copy.add(id);
-    }
-    return copy;
-  });
-};
+//   fetchInventory();
+// }, []);
 
 
-  const handleNext = async () => {
-  if (selected.size === 0) {
-    Alert.alert("No Items Selected", "Please select at least one item to continue.");
-    return;
-  }
-    const filtered = items.filter((item) => selected.has(item.id));
+//   const updateOptionInFirebase = async (id: string, value: boolean) => {
+//     try {
+//       const itemRef = doc(db, "inventory_items", id);
+//       await updateDoc(itemRef, { option: value });
+//     } catch (error) {
+//       console.error("Failed to update option for item ${id}:", error);
+//     }
+//   };
 
-  navigation.navigate('OptionSelectedScreen', {
-    selectedItems: filtered, // ✅ selectedItems should be defined and not empty
-  });
-};
+//   const toggleSelect = (id: string) => {
+//   setSelected((prev) => {
+//     const copy = new Set(prev);
+//     if (copy.has(id)) {
+//       copy.delete(id);
+//     } else {
+//       copy.add(id);
+//     }
+//     return copy;
+//   });
+// };
 
-const selectAll = () => {
-  const allIds = items.map((item) => item.id);
-  if (selected.size === items.length) {
-    setSelected(new Set());
-  } else {
-    setSelected(new Set(allIds));
-  }
-};
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color="#2e7d32" />
-        <Text style={styles.loadingText}>Loading inventory...</Text>
-      </View>
-    );
-  }
+//   const handleNext = async () => {
+//   if (selected.size === 0) {
+//     Alert.alert("No Items Selected", "Please select at least one item to continue.");
+//     return;
+//   }
+//     const filtered = items.filter((item) => selected.has(item.id));
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Select Inventory Items</Text>
+//   navigation.navigate('OptionSelectedScreen', {
+//     selectedItems: filtered, // ✅ selectedItems should be defined and not empty
+//   });
+// };
 
-      {items.length > 0 && (
-        <View style={styles.selectAllContainer}>
-          <TouchableOpacity onPress={selectAll} style={styles.selectAllButton}>
-            <Text style={styles.selectAllText}>
-              {selected.size === items.length ? "Deselect All" : "Select All"}
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.selectedCount}>
-            {selected.size} of {items.length} selected
-          </Text>
-        </View>
-      )}
+// const selectAll = () => {
+//   const allIds = items.map((item) => item.id);
+//   if (selected.size === items.length) {
+//     setSelected(new Set());
+//   } else {
+//     setSelected(new Set(allIds));
+//   }
+// };
 
-      {items.length === 0 ? (
-        <View style={styles.centered}>
-          <Text style={styles.emptyText}>No inventory items found</Text>
-        </View>
-      ) : (
-        <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
-          {items.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={[
-                styles.card,
-                selected.has(item.id) && styles.cardSelected,
-              ]}
-              onPress={() => toggleSelect(item.id)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.itemInfo}>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                </View>
-                <Checkbox
-                  status={selected.has(item.id) ? "checked" : "unchecked"}
-                  onPress={() => toggleSelect(item.id)}
-                  color="#2e7d32"
-                />
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
+//   if (loading) {
+//     return (
+//       <View style={[styles.container, styles.centered]}>
+//         <ActivityIndicator size="large" color="#2e7d32" />
+//         <Text style={styles.loadingText}>Loading inventory...</Text>
+//       </View>
+//     );
+//   }
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[
-            styles.nextButton,
-            selected.size === 0 && styles.nextButtonDisabled,
-          ]}
-          onPress={handleNext}
-          disabled={selected.size === 0}
-        >
-          <Text
-            style={[
-              styles.nextButtonText,
-              selected.size === 0 && styles.nextButtonTextDisabled,
-            ]}
-          >
-            Next ({selected.size})
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.header}>Select Inventory Items</Text>
 
-export default SelectedItemsScreen
+//       {items.length > 0 && (
+//         <View style={styles.selectAllContainer}>
+//           <TouchableOpacity onPress={selectAll} style={styles.selectAllButton}>
+//             <Text style={styles.selectAllText}>
+//               {selected.size === items.length ? "Deselect All" : "Select All"}
+//             </Text>
+//           </TouchableOpacity>
+//           <Text style={styles.selectedCount}>
+//             {selected.size} of {items.length} selected
+//           </Text>
+//         </View>
+//       )}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2fef5",
-  },
-  centered: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 20,
-    color: "#2e7d32",
-    paddingHorizontal: 16,
-  },
-  loadingText: {
-    marginTop: 10,
-    color: "#2e7d32",
-    fontSize: 16,
-  },
-  selectAllContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    marginBottom: 10,
-  },
-  selectAllButton: {
-    padding: 8,
-  },
-  selectAllText: {
-    color: "#2e7d32",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  selectedCount: {
-    color: "#666",
-    fontSize: 14,
-  },
-  scrollArea: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    borderColor: "#e0e0e0",
-    borderWidth: 1,
-  },
-  cardSelected: {
-    borderColor: "#4caf50",
-    borderWidth: 2,
-    backgroundColor: "#e8f5e9",
-  },
-  cardContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  itemInfo: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#2e7d32",
-    marginBottom: 4,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-  },
-  footer: {
-    padding: 16,
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
-  },
-  nextButton: {
-    backgroundColor: "#2e7d32",
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  nextButtonDisabled: {
-    backgroundColor: "#cccccc",
-  },
-  nextButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  nextButtonTextDisabled: {
-    color: "#999",
-  },
-});
+//       {items.length === 0 ? (
+//         <View style={styles.centered}>
+//           <Text style={styles.emptyText}>No inventory items found</Text>
+//         </View>
+//       ) : (
+//         <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
+//           {items.map((item) => (
+//             <TouchableOpacity
+//               key={item.id}
+//               style={[
+//                 styles.card,
+//                 selected.has(item.id) && styles.cardSelected,
+//               ]}
+//               onPress={() => toggleSelect(item.id)}
+//               activeOpacity={0.7}
+//             >
+//               <View style={styles.cardContent}>
+//                 <View style={styles.itemInfo}>
+//                   <Text style={styles.itemName}>{item.name}</Text>
+//                 </View>
+//                 <Checkbox
+//                   status={selected.has(item.id) ? "checked" : "unchecked"}
+//                   onPress={() => toggleSelect(item.id)}
+//                   color="#2e7d32"
+//                 />
+//               </View>
+//             </TouchableOpacity>
+//           ))}
+//         </ScrollView>
+//       )}
+
+//       <View style={styles.footer}>
+//         <TouchableOpacity
+//           style={[
+//             styles.nextButton,
+//             selected.size === 0 && styles.nextButtonDisabled,
+//           ]}
+//           onPress={handleNext}
+//           disabled={selected.size === 0}
+//         >
+//           <Text
+//             style={[
+//               styles.nextButtonText,
+//               selected.size === 0 && styles.nextButtonTextDisabled,
+//             ]}
+//           >
+//             Next ({selected.size})
+//           </Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
+
+// export default SelectedItemsScreen
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#f2fef5",
+//   },
+//   centered: {
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   header: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     textAlign: "center",
+//     marginVertical: 20,
+//     color: "#2e7d32",
+//     paddingHorizontal: 16,
+//   },
+//   loadingText: {
+//     marginTop: 10,
+//     color: "#2e7d32",
+//     fontSize: 16,
+//   },
+//   selectAllContainer: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     paddingHorizontal: 16,
+//     marginBottom: 10,
+//   },
+//   selectAllButton: {
+//     padding: 8,
+//   },
+//   selectAllText: {
+//     color: "#2e7d32",
+//     fontWeight: "600",
+//     fontSize: 16,
+//   },
+//   selectedCount: {
+//     color: "#666",
+//     fontSize: 14,
+//   },
+//   scrollArea: {
+//     flex: 1,
+//     paddingHorizontal: 16,
+//   },
+//   card: {
+//     backgroundColor: "#ffffff",
+//     borderRadius: 12,
+//     padding: 16,
+//     marginBottom: 12,
+//     elevation: 2,
+//     borderColor: "#e0e0e0",
+//     borderWidth: 1,
+//   },
+//   cardSelected: {
+//     borderColor: "#4caf50",
+//     borderWidth: 2,
+//     backgroundColor: "#e8f5e9",
+//   },
+//   cardContent: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//   },
+//   itemInfo: {
+//     flex: 1,
+//   },
+//   itemName: {
+//     fontSize: 18,
+//     fontWeight: "600",
+//     color: "#2e7d32",
+//     marginBottom: 4,
+//   },
+//   emptyText: {
+//     fontSize: 16,
+//     color: "#666",
+//     textAlign: "center",
+//   },
+//   footer: {
+//     padding: 16,
+//     backgroundColor: "#fff",
+//     borderTopWidth: 1,
+//     borderTopColor: "#e0e0e0",
+//   },
+//   nextButton: {
+//     backgroundColor: "#2e7d32",
+//     paddingVertical: 14,
+//     borderRadius: 8,
+//     alignItems: "center",
+//   },
+//   nextButtonDisabled: {
+//     backgroundColor: "#cccccc",
+//   },
+//   nextButtonText: {
+//     color: "#fff",
+//     fontSize: 16,
+//     fontWeight: "600",
+//   },
+//   nextButtonTextDisabled: {
+//     color: "#999",
+//   },
+// });
 
 
 // import { useNavigation } from "@react-navigation/native";

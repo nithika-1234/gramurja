@@ -73,17 +73,17 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 22,
-    color: '#555',
+    color: '#0d1cc5ea',
   },
   appName: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: '#0d1cc5ea',
     marginBottom: 10,
   },
   subText: {
     fontSize: 15,
-    color: '#409445ff',
+    color: '#024da3ff',
     textAlign: 'center',
     marginBottom: 40,
     fontWeight: '600',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
 
   },
   button: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: '#0a7aeaff',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
