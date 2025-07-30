@@ -3,12 +3,12 @@ import { getAuth } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { db } from '../../firebase/config';
 
@@ -63,6 +63,27 @@ export default function CustomerHome() {
     router.push('/customer/feedback'); // ✅ We'll build this screen in Step 2
   };
 
+
+ const handleViewBill = () => {
+  if (customerId) {
+    router.push(`/customer/bill/${customerId}`);
+  } else {
+    Alert.alert('Error', 'Customer ID not found');
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -79,6 +100,17 @@ export default function CustomerHome() {
       <TouchableOpacity style={styles.button} onPress={handleViewStatus}>
         <Text style={styles.buttonText}>📍 View Installation Status</Text>
       </TouchableOpacity>
+      
+
+<TouchableOpacity style={styles.billButton} onPress={handleViewBill}>
+  <Text style={styles.billText}>🧾 View Bill</Text>
+</TouchableOpacity>
+
+
+
+
+
+
 
       <TouchableOpacity style={styles.feedbackButton} onPress={handleFeedback}>
         <Text style={styles.feedbackText}>💬 Give Feedback</Text>
@@ -106,7 +138,7 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   feedbackButton: {
-    borderColor: '#283593',
+    borderColor: '#525ca5ff',
     borderWidth: 1.5,
     paddingVertical: 14,
     paddingHorizontal: 30,
@@ -114,6 +146,41 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'center',
   },
+
+billButton: {
+  backgroundColor: '#4c8cafff',
+  paddingVertical: 15,
+  paddingHorizontal: 30,
+  borderRadius: 10,
+  marginBottom: 20,
+  width: '80%',
+  alignItems: 'center',
+},
+billText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   feedbackText: { color: '#283593', fontSize: 15, fontWeight: 'bold' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

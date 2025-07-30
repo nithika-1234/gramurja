@@ -40,7 +40,7 @@ export default function TechnicianDashboard() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>WELCOME, RAVI</Text>
+      <Text style={styles.heading}>WELCOME</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/AddCustomer')}>
         <Text style={styles.buttonText}>Add Customer</Text>
@@ -54,9 +54,24 @@ export default function TechnicianDashboard() {
       <TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/Inventory')}>
         <Text style={styles.buttonText}>Inventory</Text>
       </TouchableOpacity>
+
+
+<TouchableOpacity style={styles.button} onPress={() => navigateTo('/technician/ViewCustomers')}>
+        <Text style={styles.buttonText}>Bill Generation</Text>
+      </TouchableOpacity>
+
+
+
+
+
+
+
+
+      
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },

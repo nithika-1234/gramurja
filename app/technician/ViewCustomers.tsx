@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { db } from '../../firebase/config'; // adjust path if needed
+import { db } from '../../firebase/config';
 
 export default function ViewCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -34,7 +34,7 @@ export default function ViewCustomers() {
 
       <View style={styles.buttonRow}>
         <TouchableOpacity
-          onPress={() => router.push(`/technician/update/${item.id}`)}
+          onPress={() => router.push(`/technician/update/success`)}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Update</Text>
@@ -45,6 +45,14 @@ export default function ViewCustomers() {
           style={[styles.button, { backgroundColor: '#00796B' }]}
         >
           <Text style={styles.buttonText}>Status</Text>
+        </TouchableOpacity>
+
+        {/* 👇 NEW Generate Bill Button */}
+        <TouchableOpacity
+          onPress={() => router.push(`/technician/bill/${item.id}`)}
+          style={[styles.button, { backgroundColor: '#FF7043' }]}
+        >
+          <Text style={styles.buttonText}>Generate Bill</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -67,7 +75,9 @@ export default function ViewCustomers() {
 
 const styles = StyleSheet.create({
   loaderContainer: {
-    flex: 1, alignItems: 'center', justifyContent: 'center'
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   card: {
     backgroundColor: '#F5F5F5',
@@ -83,17 +93,19 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    gap: 10,
     marginTop: 12,
   },
   button: {
     backgroundColor: '#3F51B5',
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     borderRadius: 8,
-    marginRight: 10,
+    marginRight: 8,
+    marginBottom: 8,
   },
-  buttonText: { 
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
