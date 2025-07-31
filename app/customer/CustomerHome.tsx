@@ -60,7 +60,7 @@ export default function CustomerHome() {
   };
 
   const handleFeedback = () => {
-    // router.push('/customer/feedback'); // ✅ We'll build this screen in Step 2
+    router.push('/customer/feedback'); // ✅ We'll build this screen in Step 2
   };
 
   if (loading) {
