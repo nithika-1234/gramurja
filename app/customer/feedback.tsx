@@ -1,26 +1,28 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { getAuth } from 'firebase/auth';
 import {
-    addDoc,
-    collection,
-    doc,
-    getDocs,
-    query,
-    serverTimestamp,
-    updateDoc,
-    where
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { db } from '../../firebase/config';
+
+
 
 
 export default function GiveFeedbackScreen() {
@@ -32,9 +34,13 @@ export default function GiveFeedbackScreen() {
   const user = auth.currentUser;
 
 
+
+
   useEffect(() => {
     const fetchBookedTechnicians = async () => {
       if (!user) return;
+
+
 
 
       try {
@@ -47,10 +53,14 @@ export default function GiveFeedbackScreen() {
         );
 
 
+
+
         const techIds = new Set<string>();
         bookingsSnapshot.forEach(doc => {
           techIds.add(doc.data().technicianId);
         });
+
+
 
 
         if (techIds.size === 0) {
@@ -59,10 +69,14 @@ export default function GiveFeedbackScreen() {
         }
 
 
+
+
         const techSnapshot = await getDocs(collection(db, 'technicians'));
         const filteredTechs = techSnapshot.docs
           .filter(doc => techIds.has(doc.id))
           .map(doc => ({ id: doc.id, ...doc.data() }));
+
+
 
 
         setBookedTechnicians(filteredTechs);
@@ -72,8 +86,12 @@ export default function GiveFeedbackScreen() {
     };
 
 
+
+
     fetchBookedTechnicians();
   }, []);
+
+
 
 
   const handleSubmit = async () => {
@@ -81,6 +99,8 @@ export default function GiveFeedbackScreen() {
       Alert.alert('Please fill all fields');
       return;
     }
+
+
 
 
     try {
@@ -94,10 +114,14 @@ export default function GiveFeedbackScreen() {
       );
 
 
+
+
       if (!feedbackQuery.empty) {
         Alert.alert('You have already given feedback to this technician.');
         return;
       }
+
+
 
 
       const techRef = doc(db, 'technicians', selectedTechnician.id);
@@ -105,8 +129,12 @@ export default function GiveFeedbackScreen() {
       const totalRatings = selectedTechnician.totalRatings || 0;
 
 
+
+
       const newTotalRatings = totalRatings + 1;
       const newAvgRating = ((prevRating * totalRatings) + rating) / newTotalRatings;
+
+
 
 
       // ✅ Update technician document
@@ -114,6 +142,8 @@ export default function GiveFeedbackScreen() {
         rating: parseFloat(newAvgRating.toFixed(1)),
         totalRatings: newTotalRatings
       });
+
+
 
 
       // ✅ Add feedback with customerId
@@ -127,6 +157,8 @@ export default function GiveFeedbackScreen() {
       });
 
 
+
+
       Alert.alert('✅ Feedback submitted!');
       setSelectedTechnician(null);
       setRating(0);
@@ -136,6 +168,8 @@ export default function GiveFeedbackScreen() {
       Alert.alert('❌ Failed to submit feedback');
     }
   };
+
+
 
 
   const renderStars = () => {
@@ -156,9 +190,15 @@ export default function GiveFeedbackScreen() {
   };
 
 
+
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    // <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={{ backgroundColor: '#fff' }} contentContainerStyle={styles.container}>
+
       <Text style={styles.title}>Give Feedback</Text>
+
+
 
 
       <Text style={styles.label}>Select Technician:</Text>
@@ -182,8 +222,12 @@ export default function GiveFeedbackScreen() {
       )}
 
 
+
+
       <Text style={styles.label}>Rate Technician:</Text>
       {renderStars()}
+
+
 
 
       <Text style={styles.label}>Comments:</Text>
@@ -196,12 +240,16 @@ export default function GiveFeedbackScreen() {
       />
 
 
+
+
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit Feedback</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
+
+
 
 
 const styles = StyleSheet.create({
@@ -254,12 +302,6 @@ const styles = StyleSheet.create({
     fontSize: 16
   }
 });
-
-
-
-
-
-
 
 
 

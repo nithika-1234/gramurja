@@ -178,7 +178,7 @@ itemCount: {
 
 addBtn: {
   flex: 1,
-  backgroundColor: '#8E24AA',
+  backgroundColor: '#1f67c0ff',
   paddingVertical: 10,
   paddingHorizontal: 10,
   borderRadius: 6,
@@ -190,7 +190,7 @@ addBtn: {
 
 removeBtn: {
   flex: 1,
-  backgroundColor: '#F44336',
+  backgroundColor: '#e80a0aff',
   paddingVertical: 10,
   paddingHorizontal: 10,
   borderRadius: 6,

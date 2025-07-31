@@ -23,11 +23,11 @@ export default function Welcome() {
       </View>
 
 
-      <Text style={styles.welcomeText}>Welcome to</Text>
+      {/* <Text style={styles.welcomeText}>Welcome to</Text> */}
       <Text style={styles.appName}>GramUrja</Text>
 
 
-      <Text style={styles.subText}>Bridging the Rural Solar Gap</Text>
+      <Text style={styles.subText}>Bridging Rural SolarGap</Text>
 
 
       {/* <Text style={styles.note}>
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
   },
   circleContainer: {
     borderColor: '#000000ff',
-    width: width* 0.2,
-    height: width * 0.2,
+    width: width* 0.5,
+    height: width * 0.5,
     borderRadius: width * 0.275,
     backgroundColor: '#f9f8f7',
     justifyContent: 'center',
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
   logo: {
-    width: width*0.1,
-    height: width*0.1,
+    width: width*0.5,
+    height: width*0.5,
     resizeMode: 'contain',
     borderRadius: width * 0.52,
   },

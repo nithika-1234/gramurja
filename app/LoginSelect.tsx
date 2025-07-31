@@ -23,14 +23,14 @@ export default function LoginSelect() {
       <TouchableOpacity style={styles.buttonTech} onPress={() => router.push('/login/LoginForm?role=technician')}>
 
         <Ionicons name="construct" size={24} color="#fff" />
-        <Text style={styles.buttonText}>Technician Login</Text>
+        <Text style={styles.buttonText}>Technician</Text>
       </TouchableOpacity>
 
       {/* <TouchableOpacity style={styles.buttonCust} onPress={() => handleLogin('customer')}> */}
       <TouchableOpacity style={styles.buttonCust} onPress={() => router.push('/login/LoginForm?role=customer')}>
 
         <Ionicons name="person" size={24} color="#fff" />
-        <Text style={styles.buttonText}>Customer Login</Text>
+        <Text style={styles.buttonText}>Customer</Text>
       </TouchableOpacity>
     </View>
   );

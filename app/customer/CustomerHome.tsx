@@ -500,11 +500,21 @@ export default function CustomerHome() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Welcome to GramUrja ⚡</Text>
+      <Text style={styles.heading}>  Welcome to GramUrja ⚡</Text>
+
+
+
+
+
+      <TouchableOpacity style={styles.selectButton} onPress={handleSelectTechnician}>
+        <Text style={styles.selectText}>👷Select Technician</Text>
+      </TouchableOpacity>
+
+
 
 
       <TouchableOpacity style={styles.button} onPress={handleViewStatus}>
-        <Text style={styles.buttonText}>📍 View Installation Status</Text>
+        <Text style={styles.buttonText}>📍View Status</Text>
       </TouchableOpacity>
 
 
@@ -513,14 +523,20 @@ export default function CustomerHome() {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.selectButton} onPress={handleSelectTechnician}>
-        <Text style={styles.selectText}>👷 Select Technician</Text>
-      </TouchableOpacity>
+      
 
 
       <TouchableOpacity style={styles.feedbackButton} onPress={handleFeedback}>
-        <Text style={styles.feedbackText}>💬 Give Feedback</Text>
+        <Text style={styles.feedbackText}>💬Feedback</Text>
       </TouchableOpacity>
+
+
+
+
+
+
+
+
     </View>
   );
 }
@@ -542,7 +558,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
-    backgroundColor: '#283593',
+    backgroundColor: 'rgba(120, 122, 225, 1)',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -556,7 +572,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   billButton: {
-    backgroundColor: '#4648bdff',
+    backgroundColor: 'rgba(120, 122, 225, 1)',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -570,7 +586,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   selectButton: {
-    backgroundColor: '#393febff',
+    backgroundColor: 'rgba(120, 122, 225, 1)',
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -585,6 +601,7 @@ const styles = StyleSheet.create({
   },
   feedbackButton: {
     borderColor: '#283593',
+    backgroundColor: 'rgba(120, 122, 225, 1)',
     borderWidth: 1.5,
     paddingVertical: 14,
     paddingHorizontal: 30,
@@ -593,7 +610,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   feedbackText: {
-    color: '#283593',
+    //color: '#e6e7f2ff',
+    color: '#fff',
     fontSize: 15,
     fontWeight: 'bold',
   },

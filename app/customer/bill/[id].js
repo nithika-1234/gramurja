@@ -53,7 +53,9 @@ export default function CustomerBill() {
   const { customerName, items, totalAmount, billGeneratedAt } = billData;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    // <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} contentContainerStyle={styles.container}>
+
       <View style={styles.billPaper}>
         <Text style={styles.header}>⚡ Solar Panel Installation Bill</Text>
         <Text style={styles.subHeader}>Customer: {customerName}</Text>
