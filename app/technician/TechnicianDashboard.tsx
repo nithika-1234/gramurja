@@ -255,6 +255,8 @@ export default function TechnicianDashboard() {
          
           <CustomButton label="📦 Inventory" onPress={() => navigateTo('/technician/Inventory')} />
           <CustomButton label="View Customers" onPress={() => navigateTo('/technician/ViewCustomers')} />
+<CustomButton label="Complaints" onPress={() => navigateTo('/technician/Complaint')} />
+
         </View>
       </View>
     </SafeAreaView>
