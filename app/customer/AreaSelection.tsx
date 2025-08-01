@@ -36,7 +36,7 @@ export default function AreaSelection() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20,backgroundColor: '#ffffff' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center',marginTop:150 },
   button: {
     backgroundColor: '#6ea5ecff',
     padding: 15,

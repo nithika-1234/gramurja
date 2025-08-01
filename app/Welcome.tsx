@@ -283,7 +283,7 @@ export default function Welcome() {
         style={styles.button}
         onPress={() => router.push('/LoginSelect')}
       >
-        <Text style={styles.buttonText}>Get Started</Text>
+        <Text style={styles.buttonText}> Get Started</Text>
       </TouchableOpacity>
     </View>
   );

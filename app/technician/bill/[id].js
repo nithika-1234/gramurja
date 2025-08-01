@@ -348,12 +348,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   invoiceTitle: {
-    fontSize: 20,
+    
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
     color: '#000',
     textDecorationLine: 'underline',
+
+marginTop: 40,
+    fontSize: 20,
+    
+    marginBottom: 10,
+    
+
+
+
   },
   customerNameBill: {
     fontSize: 16,

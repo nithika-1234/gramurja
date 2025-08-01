@@ -1,17 +1,17 @@
     import { getAuth } from 'firebase/auth';
 import {
-    collection,
-    getDocs,
-    query,
-    where,
+  collection,
+  getDocs,
+  query,
+  where,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { db } from '../../firebase/config';
 
@@ -110,6 +110,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F6FC',
     paddingHorizontal: 16,
     paddingTop: 20,
+
+    marginTop: 30,
+ marginBottom: 30,
+
   },
   title: {
     fontSize: 24,

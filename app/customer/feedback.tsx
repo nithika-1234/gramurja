@@ -559,13 +559,22 @@ export default function GiveFeedbackScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#fff',
-    paddingBottom: 40
+    //backgroundColor: '#fff',
+    
+
+
+
+    
+    backgroundColor: 'white',
+    paddingBottom: 40,
+    marginTop:20
+
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16
+    marginBottom: 16,
+    marginTop:15
   },
   label: {
     fontSize: 16,

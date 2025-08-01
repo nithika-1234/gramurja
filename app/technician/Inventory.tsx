@@ -1,3 +1,9 @@
+// 
+
+
+//modifiedcodeinventory
+
+
 import { useRouter } from 'expo-router';
 import { addDoc, collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -5,9 +11,13 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { auth, db } from '../../firebase/config';
 
 
+
+
 export default function Inventory() {
   const router = useRouter();
   const [items, setItems] = useState<{ name: string; quantity: number }[]>([]); // ✅ updated field name
+
+
 
 
   const fetchInventory = async () => {
@@ -16,10 +26,14 @@ export default function Inventory() {
       const list: { name: string; quantity: number }[] = [];
 
 
+
+
       snapshot.forEach((doc) => {
         const data = doc.data();
         list.push({ name: doc.id, quantity: data.quantity || 0 }); // ✅ use quantity
       });
+
+
 
 
       setItems(list);
@@ -29,9 +43,13 @@ export default function Inventory() {
   };
 
 
+
+
   useEffect(() => {
     fetchInventory();
   }, []);
+
+
 
 
   const handleAdd = async (itemName: string) => {
@@ -39,9 +57,13 @@ export default function Inventory() {
     const newQuantity = previousQuantity + 1;
 
 
+
+
     try {
       const itemRef = doc(db, 'inventory_items', itemName);
       await setDoc(itemRef, { quantity: newQuantity }, { merge: true });
+
+
 
 
       const historyRef = collection(db, 'inventory_history');
@@ -56,6 +78,8 @@ timestamp: serverTimestamp(),
       });
 
 
+
+
       fetchInventory();
     } catch (err) {
       console.error('Add error:', err);
@@ -63,14 +87,20 @@ timestamp: serverTimestamp(),
   };
 
 
+
+
   const handleRemove = async (itemName: string) => {
     const previousQuantity = items.find((i) => i.name === itemName)?.quantity || 0;
     const newQuantity = Math.max(previousQuantity - 1, 0);
 
 
+
+
     try {
       const itemRef = doc(db, 'inventory_items', itemName);
       await setDoc(itemRef, { quantity: newQuantity }, { merge: true });
+
+
 
 
       const historyRef = collection(db, 'inventory_history');
@@ -85,6 +115,8 @@ timestamp: serverTimestamp(),
       });
 
 
+
+
       fetchInventory();
     } catch (err) {
       console.error('Remove error:', err);
@@ -92,32 +124,38 @@ timestamp: serverTimestamp(),
   };
 
 
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Inventory Management</Text>
 
 
+
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {items.map((item, index) => (
-          <View key={index} style={styles.itemRow}>
-            <Text style={styles.itemName}>{item.name}</Text>
+<View key={index} style={styles.itemRow}>
+  <View style={styles.itemInfo}>
+    <Text style={styles.itemName}>{item.name}</Text>
+    <Text style={styles.itemCount}>{item.quantity} ✅</Text>
+  </View>
 
 
-            <Text style={styles.itemCount}>
-              {item.quantity} ✅
-            </Text>
+  <View style={styles.actionButtons}>
+    <TouchableOpacity style={styles.addBtn} onPress={() => handleAdd(item.name)}>
+      <Text style={styles.btnText}>Add</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(item.name)}>
+      <Text style={styles.btnText}>Remove</Text>
+    </TouchableOpacity>
+  </View>
+</View>
 
 
-            <TouchableOpacity style={styles.addBtn} onPress={() => handleAdd(item.name)}>
-              <Text style={styles.btnText}>Add</Text>
-            </TouchableOpacity>
-
-
-            <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(item.name)}>
-              <Text style={styles.btnText}>Remove</Text>
-            </TouchableOpacity>
-          </View>
         ))}
+
+
 
 
         <TouchableOpacity style={styles.historyBtn} onPress={() => router.push('/technician/InventoryHistory')}>
@@ -125,9 +163,11 @@ timestamp: serverTimestamp(),
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={() => router.back()}>
+
+
+        {/* <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.back}>⬅ Back</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
     </View>
   );
@@ -136,76 +176,84 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#fff' },
 
 
+
+
   heading: {
     fontSize: 22,
     fontWeight: 'bold',
+    marginTop: 20,
     marginBottom: 20,
     textAlign: 'center',
   },
 scrollContainer: {
-  paddingBottom: 100, // Adjust as needed
+  paddingBottom: 100,
+    paddingTop: 10,
+// Adjust as needed
 },
- itemRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
+itemRow: {
+  flexDirection: 'column',
   borderWidth: 1,
   borderColor: '#ddd',
-  paddingVertical: 12,
-  paddingHorizontal: 10,
   borderRadius: 10,
+  padding: 12,
   marginBottom: 10,
   backgroundColor: '#fff',
-  gap: 8,
+},
+
+
+itemInfo: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 10,
 },
 
 
 itemName: {
-  flex: 2,
   fontSize: 16,
   color: '#000',
   fontWeight: '500',
+  flexShrink: 1,
 },
 
 
 itemCount: {
-  flex: 1.2,
   fontSize: 15,
   color: '#2e7d32',
-  textAlign: 'center',
+},
+
+
+actionButtons: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  gap: 10,
 },
 
 
 addBtn: {
   flex: 1,
-  backgroundColor: '#1f67c0ff',
+  backgroundColor: '#1f67c0',
   paddingVertical: 10,
-  paddingHorizontal: 10,
   borderRadius: 6,
   alignItems: 'center',
-  width: '30%',
-  justifyContent: 'center',
 },
 
 
 removeBtn: {
   flex: 1,
-  backgroundColor: '#e80a0aff',
+  backgroundColor: '#e80a0a',
   paddingVertical: 10,
-  paddingHorizontal: 10,
   borderRadius: 6,
-  width: '30%',
   alignItems: 'center',
-  justifyContent: 'center',
 },
-
-
 btnText: {
   color: '#fff',
   fontWeight: 'bold',
   fontSize: 14,
 }
 ,
+
+
 
 
   historyBtn: {
@@ -217,11 +265,15 @@ btnText: {
   },
 
 
+
+
   historyText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+
+
 
 
   back: {
@@ -230,3 +282,4 @@ btnText: {
     color: '#555',
   },
 });
+
