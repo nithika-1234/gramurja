@@ -1,4 +1,4 @@
-    import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     elevation: 3,
+    
   },
   header: {
     fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10,
@@ -126,3 +127,9 @@ const styles = StyleSheet.create({
     fontSize: 16, color: 'red', fontWeight: 'bold',
   },
 });
+
+
+
+
+
+

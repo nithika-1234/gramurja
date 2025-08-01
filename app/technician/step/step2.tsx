@@ -66,8 +66,7 @@ if (isConnected) {
 try {
 await setDoc(ref, { step2: step2Data }, { merge: true });
 await AsyncStorage.removeItem(`step2-${id}`);
-Alert.alert('Saved', `Step 2 marked as
-${status.toUpperCase()}`);
+Alert.alert('Saved', `Step 2 marked as ${status.toUpperCase()}`);
 } catch (err) {
 Alert.alert('Error', 'Failed to sync with Firestore');
 }

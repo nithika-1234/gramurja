@@ -448,6 +448,7 @@ const styles = StyleSheet.create({
 passwordInput: {
   flex: 1,
   fontSize: 16,
+  padding:0,
 },
 
 

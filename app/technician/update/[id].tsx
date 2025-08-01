@@ -122,7 +122,7 @@ router.push(`/technician/update/FileUpload?customerUid=${id}`)}
 const styles = StyleSheet.create({
 container: { flexGrow: 1, padding: 20, alignItems: 'center',
 backgroundColor: '#fff' },
-title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 ,marginTop:40 },
+title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 ,marginTop:80 },
 subtext: { fontSize: 14, color: '#666', marginBottom: 20 },
 stepsColumn: {
 width: '100%',
@@ -169,3 +169,10 @@ fontWeight: '600',
 
 },
 });
+
+
+
+
+
+
+
